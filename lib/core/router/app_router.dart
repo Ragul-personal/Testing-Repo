@@ -7,8 +7,10 @@ import '../../presentation/pages/calendar_page.dart';
 import '../../presentation/pages/create_subject_page.dart';
 import '../../presentation/pages/create_subtopic_page.dart';
 import '../../presentation/pages/create_topic_page.dart';
+import '../../presentation/pages/daily_tasks_history_page.dart';
 import '../../presentation/pages/daily_tasks_manage_page.dart';
 import '../../presentation/pages/daily_tasks_page.dart';
+import '../../presentation/pages/daily_tasks_task_history_page.dart';
 import '../../presentation/pages/home_shell.dart';
 import '../../presentation/pages/onboarding_page.dart';
 import '../../presentation/pages/settings_page.dart';
@@ -89,6 +91,21 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // Everything below is pushed above the shell (root navigator), so the
       // bottom navigation bar isn't visible on a detail or form screen.
+      GoRoute(
+        path: '/daily-tasks/history/:mode/:date',
+        parentNavigatorKey: _rootKey,
+        builder: (_, s) => DailyTasksHistoryPage(
+          initialMode: s.pathParameters['mode']!,
+          initialDate: DateTime.parse(s.pathParameters['date']!),
+        ),
+      ),
+      GoRoute(
+        path: '/daily-tasks/history/task/:taskId',
+        parentNavigatorKey: _rootKey,
+        builder: (_, s) => DailyTasksTaskHistoryPage(
+          taskId: s.pathParameters['taskId']!,
+        ),
+      ),
       GoRoute(
         path: '/daily-tasks/manage',
         parentNavigatorKey: _rootKey,

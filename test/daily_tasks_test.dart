@@ -146,17 +146,85 @@ void main() {
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // Streak calculation logic (unit test of the algorithm)
+  // Scheduled Tasks logic
   // ═══════════════════════════════════════════════════════════════════════════
+  group('isTaskScheduledOnDate logic', () {
+    bool isTaskScheduledOnDate(DailyTaskTemplate t, DateTime date) {
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
-  group('streak calculation', () {
-    /// Mirrors the logic in dailyTaskStreakProvider.
-    int calculateStreak(List<DailyTaskDayRecord> history) {
+      if (t.createdAt.isAfter(endOfDay)) return false;
+      if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay)) {
+        return false;
+      }
+      return true;
+    }
+
+    test('task created same day is scheduled', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: true, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 23, 10, 0),
+      );
+      expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), true);
+    });
+
+    test('task created after date is NOT scheduled', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: true, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 24, 10, 0),
+      );
+      expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), false);
+    });
+
+    test('task archived same day IS scheduled', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: false, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 20),
+        archivedAt: DateTime(2026, 9, 23, 14, 0),
+      );
+      expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), true);
+    });
+
+    test('task archived before date is NOT scheduled', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: false, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 20),
+        archivedAt: DateTime(2026, 9, 22, 14, 0),
+      );
+      expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), false);
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Task streak algorithm
+  // ═══════════════════════════════════════════════════════════════════════════
+  group('task streak calculation', () {
+    int calculateTaskStreak(DailyTaskTemplate template, List<DailyTaskCompletion> completions, DateTime today) {
+      bool isTaskScheduledOnDate(DailyTaskTemplate t, DateTime date) {
+        final startOfDay = DateTime(date.year, date.month, date.day);
+        final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
+        if (t.createdAt.isAfter(endOfDay)) return false;
+        if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay)) return false;
+        return true;
+      }
+
       var streak = 0;
-      for (int i = history.length - 1; i >= 0; i--) {
-        final r = history[i];
-        if (r.total == 0) break;
-        if (r.completed == r.total) {
+      for (int i = 0;; i++) {
+        final date = today.subtract(Duration(days: i));
+
+        if (!isTaskScheduledOnDate(template, date)) {
+          if (template.createdAt.isAfter(DateTime(date.year, date.month, date.day, 23, 59, 59))) {
+            break; // reached before creation
+          }
+          continue; // skip unscheduled days
+        }
+
+        final c = completions.where((c) =>
+            c.date.year == date.year &&
+            c.date.month == date.month &&
+            c.date.day == date.day).firstOrNull;
+
+        if (c != null && c.completed) {
           streak++;
         } else {
           break;
@@ -165,103 +233,33 @@ void main() {
       return streak;
     }
 
-    test('streak is 0 when no history', () {
-      expect(calculateStreak([]), 0);
-    });
-
-    test('streak counts consecutive 100% days from end', () {
-      final history = [
-        DailyTaskDayRecord(date: DateTime(2026, 9, 20), total: 4, completed: 4),
-        DailyTaskDayRecord(date: DateTime(2026, 9, 21), total: 4, completed: 3),
-        DailyTaskDayRecord(date: DateTime(2026, 9, 22), total: 4, completed: 4),
-        DailyTaskDayRecord(date: DateTime(2026, 9, 23), total: 4, completed: 4),
-      ];
-      expect(calculateStreak(history), 2); // Sep 22 + Sep 23
-    });
-
-    test('streak breaks on zero-task day', () {
-      final history = [
-        DailyTaskDayRecord(date: DateTime(2026, 9, 22), total: 4, completed: 4),
-        DailyTaskDayRecord(date: DateTime(2026, 9, 23), total: 0, completed: 0),
-      ];
-      expect(calculateStreak(history), 0);
-    });
-
-    test('streak breaks on incomplete day', () {
-      final history = [
-        DailyTaskDayRecord(date: DateTime(2026, 9, 22), total: 4, completed: 4),
-        DailyTaskDayRecord(date: DateTime(2026, 9, 23), total: 4, completed: 2),
-      ];
-      expect(calculateStreak(history), 0);
-    });
-
-    test('full streak across all days', () {
-      final history = List.generate(
-        7,
-        (i) => DailyTaskDayRecord(
-          date: DateTime(2026, 9, 17 + i),
-          total: 3,
-          completed: 3,
-        ),
+    test('streak handles skipped days for archived tasks', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: false, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 20),
+        archivedAt: DateTime(2026, 9, 22),
       );
-      expect(calculateStreak(history), 7);
-    });
-  });
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // 7-day and 30-day average calculation (unit test of the algorithm)
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  group('average calculations', () {
-    double calculate7DayAvg(List<DailyTaskDayRecord> history) {
-      final last7 =
-          history.length >= 7 ? history.sublist(history.length - 7) : history;
-      if (last7.isEmpty) return 0;
-      final sum = last7.fold<double>(
-        0,
-        (acc, r) => acc + (r.total > 0 ? r.completed / r.total * 100 : 0),
-      );
-      return sum / last7.length;
-    }
-
-    double calculate30DayAvg(List<DailyTaskDayRecord> history) {
-      if (history.isEmpty) return 0;
-      final sum = history.fold<double>(
-        0,
-        (acc, r) => acc + (r.total > 0 ? r.completed / r.total * 100 : 0),
-      );
-      return sum / history.length;
-    }
-
-    test('7-day average is 0 when no history', () {
-      expect(calculate7DayAvg([]), 0);
-    });
-
-    test('30-day average is 0 when no history', () {
-      expect(calculate30DayAvg([]), 0);
-    });
-
-    test('7-day average calculates correctly', () {
-      final history = [
-        DailyTaskDayRecord(date: DateTime(2026, 9, 17), total: 4, completed: 4), // 100%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 18), total: 4, completed: 3), // 75%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 19), total: 4, completed: 2), // 50%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 20), total: 4, completed: 3), // 75%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 21), total: 4, completed: 4), // 100%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 22), total: 4, completed: 2), // 50%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 23), total: 4, completed: 3), // 75%
+      final completions = [
+        DailyTaskCompletion(id: 'c1', taskTemplateId: '1', date: DateTime(2026, 9, 20), completed: true),
+        DailyTaskCompletion(id: 'c2', taskTemplateId: '1', date: DateTime(2026, 9, 21), completed: true),
+        DailyTaskCompletion(id: 'c3', taskTemplateId: '1', date: DateTime(2026, 9, 22), completed: true),
       ];
-      // Average = (100 + 75 + 50 + 75 + 100 + 50 + 75) / 7 = 525 / 7 = 75
-      expect(calculate7DayAvg(history), 75);
+      // Today is 24th. Task archived on 22nd. 23rd and 24th are unscheduled. Streak should be 3.
+      expect(calculateTaskStreak(t, completions, DateTime(2026, 9, 24)), 3);
     });
 
-    test('zero-task days contribute 0% to average', () {
-      final history = [
-        DailyTaskDayRecord(date: DateTime(2026, 9, 22), total: 0, completed: 0), // 0%
-        DailyTaskDayRecord(date: DateTime(2026, 9, 23), total: 4, completed: 4), // 100%
+    test('streak breaks if incomplete', () {
+      final t = DailyTaskTemplate(
+        id: '1', title: 'A', active: true, sortOrder: 0,
+        createdAt: DateTime(2026, 9, 20),
+      );
+      final completions = [
+        DailyTaskCompletion(id: 'c1', taskTemplateId: '1', date: DateTime(2026, 9, 20), completed: true),
+        DailyTaskCompletion(id: 'c2', taskTemplateId: '1', date: DateTime(2026, 9, 21), completed: true),
+        // 22nd incomplete
+        DailyTaskCompletion(id: 'c4', taskTemplateId: '1', date: DateTime(2026, 9, 23), completed: true),
       ];
-      // Average = (0 + 100) / 2 = 50
-      expect(calculate7DayAvg(history), 50);
+      expect(calculateTaskStreak(t, completions, DateTime(2026, 9, 23)), 1);
     });
   });
 

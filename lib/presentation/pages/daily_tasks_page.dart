@@ -24,10 +24,6 @@ class DailyTasksPage extends ConsumerWidget {
     final tasks = ref.watch(activeDailyTasksProvider);
     final completions = ref.watch(todayCompletionsProvider);
     final progress = ref.watch(dailyTaskProgressProvider);
-    final streak = ref.watch(dailyTaskStreakProvider);
-    final avg7 = ref.watch(dailyTask7DayAvgProvider);
-    final avg30 = ref.watch(dailyTask30DayAvgProvider);
-    final history = ref.watch(dailyTaskHistoryProvider);
     final commands = ref.read(dailyTaskCommandsProvider);
     final today = ref.watch(currentDayProvider);
 
@@ -143,39 +139,6 @@ class DailyTasksPage extends ConsumerWidget {
                   ),
                 ),
 
-                // ── Stats row ───────────────────────────────────────
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.gutter,
-                    ),
-                    child: Row(
-                      children: [
-                        _StatChip(
-                          icon: Icons.local_fire_department_rounded,
-                          iconColor: Colors.orange,
-                          value: '$streak',
-                          label: 'streak',
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        _StatChip(
-                          icon: Icons.trending_up_rounded,
-                          iconColor: cs.primary,
-                          value: '${avg7.round()}%',
-                          label: '7-day',
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        _StatChip(
-                          icon: Icons.calendar_month_rounded,
-                          iconColor: cs.tertiary,
-                          value: '${avg30.round()}%',
-                          label: '30-day',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
                 // ── Chart ───────────────────────────────────────────
                 SliverToBoxAdapter(
                   child: Padding(
@@ -184,11 +147,18 @@ class DailyTasksPage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Last 7 days',
+                          'Recent Progress',
                           style: tt.titleSmall,
                         ),
                         const SizedBox(height: AppSpacing.lg),
-                        DailyTaskChart(data: history, maxDays: 7),
+                        DailyTaskChart(
+                          data: ref.watch(dailyTaskHistoryDaysProvider(7)),
+                          maxDays: 7,
+                          onDayTap: (date) {
+                            context.push(
+                                '/daily-tasks/history/day/${date.toIso8601String()}');
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -359,55 +329,4 @@ class _TaskTile extends StatelessWidget {
   }
 }
 
-class _StatChip extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String value;
-  final String label;
 
-  const _StatChip({
-    required this.icon,
-    required this.iconColor,
-    required this.value,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 16, color: iconColor),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  label,
-                  style: tt.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              value,
-              style: tt.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

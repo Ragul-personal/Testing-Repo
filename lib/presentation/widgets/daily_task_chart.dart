@@ -13,11 +13,13 @@ import '../providers/daily_task_providers.dart';
 class DailyTaskChart extends StatelessWidget {
   final List<DailyTaskDayRecord> data;
   final int maxDays;
+  final void Function(DateTime)? onDayTap;
 
   const DailyTaskChart({
     super.key,
     required this.data,
     this.maxDays = 7,
+    this.onDayTap,
   });
 
   @override
@@ -33,15 +35,39 @@ class DailyTaskChart extends StatelessWidget {
 
     return SizedBox(
       height: 140,
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: _ChartPainter(
-          records: visible,
-          barColor: cs.primary,
-          barBackground: cs.surfaceContainerHighest,
-          labelColor: cs.onSurfaceVariant,
-          valueColor: cs.onSurface,
-          textDirection: direction,
+      child: GestureDetector(
+        onTapUp: (details) {
+          if (onDayTap == null || visible.isEmpty) return;
+          final renderBox = context.findRenderObject() as RenderBox?;
+          if (renderBox == null) return;
+          final size = renderBox.size;
+          final barWidth = math.min(
+            32.0,
+            (size.width - 8.0 * (visible.length - 1)) / visible.length,
+          );
+          final totalWidth =
+              barWidth * visible.length + 8.0 * (visible.length - 1);
+          final startX = (size.width - totalWidth) / 2;
+          
+          final dx = details.localPosition.dx;
+          for (int i = 0; i < visible.length; i++) {
+            final x = startX + i * (barWidth + 8.0);
+            if (dx >= x - 4.0 && dx <= x + barWidth + 4.0) {
+              onDayTap!(visible[i].date);
+              break;
+            }
+          }
+        },
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: _ChartPainter(
+            records: visible,
+            barColor: cs.primary,
+            barBackground: cs.surfaceContainerHighest,
+            labelColor: cs.onSurfaceVariant,
+            valueColor: cs.onSurface,
+            textDirection: direction,
+          ),
         ),
       ),
     );
