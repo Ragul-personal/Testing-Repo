@@ -57,7 +57,8 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
                         color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.lg),
                         border: Border.all(
-                            color: Colors.orange.withValues(alpha: 0.5)),
+                          color: Colors.orange.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Column(
                         children: [

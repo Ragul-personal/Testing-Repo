@@ -295,8 +295,9 @@ class _Breadcrumb extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
-    if (subjectName == null && topicName == null)
+    if (subjectName == null && topicName == null) {
       return const SizedBox.shrink();
+    }
 
     Widget crumb(String text, Color color, VoidCallback? onTap) => InkWell(
           onTap: onTap,

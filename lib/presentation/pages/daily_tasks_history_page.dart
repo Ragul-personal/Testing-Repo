@@ -157,9 +157,12 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
   }
 
   Widget _buildContent() {
-    if (_mode == 'day') return _buildDayView();
-    if (_mode == 'week')
+    if (_mode == 'day') {
+      return _buildDayView();
+    }
+    if (_mode == 'week') {
       return _buildAggregateView(_getWeekDates(_selectedDate));
+    }
     return _buildAggregateView(_getMonthDates(_selectedDate));
   }
 

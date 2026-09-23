@@ -219,9 +219,12 @@ void main() {
       bool isTaskScheduledOnDate(DailyTaskTemplate t, DateTime date) {
         final startOfDay = DateTime(date.year, date.month, date.day);
         final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
-        if (t.createdAt.isAfter(endOfDay)) return false;
-        if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay))
+        if (t.createdAt.isAfter(endOfDay)) {
           return false;
+        }
+        if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay)) {
+          return false;
+        }
         return true;
       }
 
