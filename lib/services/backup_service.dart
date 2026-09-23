@@ -13,6 +13,8 @@ import 'package:share_plus/share_plus.dart';
 
 import 'saf_service.dart';
 
+import '../data/models/daily_task_completion_model.dart';
+import '../data/models/daily_task_template_model.dart';
 import '../data/models/review_model.dart';
 import '../data/models/subject_model.dart';
 import '../data/models/subtopic_model.dart';
@@ -113,6 +115,10 @@ class BackupService {
       'topics': store.topics.values.map((m) => m.toJson()).toList(),
       'subtopics': store.subtopics.values.map((m) => m.toJson()).toList(),
       'reviews': store.reviews.values.map((m) => m.toJson()).toList(),
+      'dailyTaskTemplates':
+          store.dailyTaskTemplates.values.map((m) => m.toJson()).toList(),
+      'dailyTaskCompletions':
+          store.dailyTaskCompletions.values.map((m) => m.toJson()).toList(),
     };
   }
 
@@ -779,6 +785,8 @@ class BackupService {
       await store.topics.clear();
       await store.subtopics.clear();
       await store.reviews.clear();
+      await store.dailyTaskTemplates.clear();
+      await store.dailyTaskCompletions.clear();
     }
 
     var subjects = 0, topics = 0, subtopics = 0, reviews = 0, skipped = 0;
@@ -825,6 +833,34 @@ class BackupService {
         reviews++;
       } catch (e) {
         debugPrint('[backup] skipped review: $e');
+        skipped++;
+      }
+    }
+
+    // Daily task templates — absent in older backups, handled gracefully.
+    for (final raw
+        in (decoded['dailyTaskTemplates'] as List? ?? const [])) {
+      try {
+        final m = DailyTaskTemplateModel.fromJson(
+          raw as Map<String, dynamic>,
+        );
+        await store.dailyTaskTemplates.put(m.id, m);
+      } catch (e) {
+        debugPrint('[backup] skipped daily task template: $e');
+        skipped++;
+      }
+    }
+
+    // Daily task completions — absent in older backups, handled gracefully.
+    for (final raw
+        in (decoded['dailyTaskCompletions'] as List? ?? const [])) {
+      try {
+        final m = DailyTaskCompletionModel.fromJson(
+          raw as Map<String, dynamic>,
+        );
+        await store.dailyTaskCompletions.put(m.id, m);
+      } catch (e) {
+        debugPrint('[backup] skipped daily task completion: $e');
         skipped++;
       }
     }

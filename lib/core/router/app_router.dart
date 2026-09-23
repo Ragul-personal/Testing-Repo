@@ -7,6 +7,8 @@ import '../../presentation/pages/calendar_page.dart';
 import '../../presentation/pages/create_subject_page.dart';
 import '../../presentation/pages/create_subtopic_page.dart';
 import '../../presentation/pages/create_topic_page.dart';
+import '../../presentation/pages/daily_tasks_manage_page.dart';
+import '../../presentation/pages/daily_tasks_page.dart';
 import '../../presentation/pages/home_shell.dart';
 import '../../presentation/pages/onboarding_page.dart';
 import '../../presentation/pages/settings_page.dart';
@@ -31,7 +33,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const OnboardingPage(),
       ),
 
-      // The four tabs live in a persistent shell.
+      // The five tabs live in a persistent shell.
       //
       // They used to be four separate top-level routes, each building its own
       // `HomeShell`. Switching tabs therefore replaced the whole route, so the
@@ -61,6 +63,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/daily-tasks',
+                builder: (_, __) => const DailyTasksPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/calendar',
                 builder: (_, __) => const CalendarPage(),
               ),
@@ -79,6 +89,11 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // Everything below is pushed above the shell (root navigator), so the
       // bottom navigation bar isn't visible on a detail or form screen.
+      GoRoute(
+        path: '/daily-tasks/manage',
+        parentNavigatorKey: _rootKey,
+        builder: (_, __) => const DailyTasksManagePage(),
+      ),
       GoRoute(
         path: '/settings',
         parentNavigatorKey: _rootKey,

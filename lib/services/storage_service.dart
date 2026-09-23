@@ -1,6 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../data/migrations.dart';
+import '../data/models/daily_task_completion_model.dart';
+import '../data/models/daily_task_template_model.dart';
 import '../data/models/review_model.dart';
 import '../data/models/subject_model.dart';
 import '../data/models/subtopic_model.dart';
@@ -38,6 +40,12 @@ class StorageService {
   static const String reviewsBox = 'reviews';
   static const String prefsBox = 'prefs';
 
+  /// Daily task templates — the recurring items the user wants to do every day.
+  static const String dailyTaskTemplatesBox = 'daily_task_templates';
+
+  /// Daily task completions — one record per (template, calendar-date) pair.
+  static const String dailyTaskCompletionsBox = 'daily_task_completions';
+
   StorageService._();
   static final StorageService instance = StorageService._();
 
@@ -55,12 +63,20 @@ class StorageService {
     if (!Hive.isAdapterRegistered(4)) {
       Hive.registerAdapter(TopicModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(5)) {
+      Hive.registerAdapter(DailyTaskTemplateModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(6)) {
+      Hive.registerAdapter(DailyTaskCompletionModelAdapter());
+    }
 
     await Hive.openBox<SubjectModel>(subjectsBox);
     await Hive.openBox<TopicModel>(topicsBox);
     await Hive.openBox<SubtopicModel>(subtopicsBox);
     await Hive.openBox<ReviewModel>(reviewsBox);
     await Hive.openBox(prefsBox);
+    await Hive.openBox<DailyTaskTemplateModel>(dailyTaskTemplatesBox);
+    await Hive.openBox<DailyTaskCompletionModel>(dailyTaskCompletionsBox);
 
     // Subtopics saved by an earlier build have no parent. Building the missing
     // layer here — before the first provider reads a box — means no screen
@@ -73,6 +89,10 @@ class StorageService {
   Box<SubtopicModel> get subtopics => Hive.box<SubtopicModel>(subtopicsBox);
   Box<ReviewModel> get reviews => Hive.box<ReviewModel>(reviewsBox);
   Box get prefs => Hive.box(prefsBox);
+  Box<DailyTaskTemplateModel> get dailyTaskTemplates =>
+      Hive.box<DailyTaskTemplateModel>(dailyTaskTemplatesBox);
+  Box<DailyTaskCompletionModel> get dailyTaskCompletions =>
+      Hive.box<DailyTaskCompletionModel>(dailyTaskCompletionsBox);
 
   /// Re-run the hierarchy migration. Called at startup and after every restore,
   /// since a backup can carry pre-subtopic records at any time.

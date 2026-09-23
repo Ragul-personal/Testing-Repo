@@ -27,8 +27,8 @@ class HomeShell extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
 
     // One FAB, owned by the shell, whose action follows the visible tab. Only
-    // Today and Subjects have a primary create action; Calendar and Progress
-    // are read-only, so it's simply absent there.
+    // Today and Subjects have a primary create action; Daily, Calendar and
+    // Progress are read-only or handle their own actions, so the FAB is absent.
     final fab = switch (shell.currentIndex) {
       // Today's create action goes straight to a subtopic: that is the level
       // that gets scheduled, and its form picks the subject and topic on the
@@ -78,6 +78,11 @@ class HomeShell extends StatelessWidget {
                 icon: Icon(Icons.folder_outlined),
                 selectedIcon: Icon(Icons.folder_rounded),
                 label: 'Subjects',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.task_alt_outlined),
+                selectedIcon: Icon(Icons.task_alt_rounded),
+                label: 'Daily',
               ),
               NavigationDestination(
                 icon: Icon(Icons.calendar_today_outlined),
