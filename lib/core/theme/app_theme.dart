@@ -336,9 +336,8 @@ class AppTheme {
 
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: brightness == Brightness.light
-            ? _lightInk
-            : _darkSurfaceAlt,
+        backgroundColor:
+            brightness == Brightness.light ? _lightInk : _darkSurfaceAlt,
         contentTextStyle: text.bodyMedium?.copyWith(
           color: brightness == Brightness.light ? Colors.white : _darkInk,
         ),

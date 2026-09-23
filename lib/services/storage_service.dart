@@ -124,5 +124,4 @@ class StorageService {
   /// pull a backup back in after a reinstall. Reviews are deliberately excluded:
   /// orphan review rows without subjects or subtopics are not worth preserving.
   bool get isEmpty => subjects.isEmpty && topics.isEmpty && subtopics.isEmpty;
-
 }

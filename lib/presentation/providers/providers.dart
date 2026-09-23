@@ -129,10 +129,12 @@ final dueTodayProvider = Provider<List<Subtopic>>((ref) {
   final today = ref.watch(currentDayProvider);
   final end = endOfDay(today);
   return all
-      .where((s) =>
-          s.status == SubtopicStatus.active &&
-          !s.nextDueAt.isAfter(end) &&
-          !s.nextDueAt.isBefore(today))
+      .where(
+        (s) =>
+            s.status == SubtopicStatus.active &&
+            !s.nextDueAt.isAfter(end) &&
+            !s.nextDueAt.isBefore(today),
+      )
       .toList()
     ..sort((a, b) => a.nextDueAt.compareTo(b.nextDueAt));
 });
@@ -141,15 +143,15 @@ final overdueProvider = Provider<List<Subtopic>>((ref) {
   final all = ref.watch(subtopicsStreamProvider).valueOrNull ?? const [];
   final today = ref.watch(currentDayProvider);
   return all
-      .where((s) =>
-          s.status == SubtopicStatus.active && s.nextDueAt.isBefore(today))
+      .where(
+        (s) => s.status == SubtopicStatus.active && s.nextDueAt.isBefore(today),
+      )
       .toList()
     ..sort((a, b) => a.nextDueAt.compareTo(b.nextDueAt));
 });
 
 // `upcomingProvider` was removed with the Today screen's "Coming up"
 // section: the home screen now shows only what is due today.
-
 
 /// Reviews recorded today. Drives the Today screen's progress bar.
 final reviewedTodayCountProvider = Provider<int>((ref) {

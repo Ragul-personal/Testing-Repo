@@ -87,8 +87,7 @@ class DailyTaskCompletion {
       taskTemplateId: taskTemplateId,
       date: date,
       completed: completed ?? this.completed,
-      completedAt:
-          clearCompletedAt ? null : (completedAt ?? this.completedAt),
+      completedAt: clearCompletedAt ? null : (completedAt ?? this.completedAt),
     );
   }
 }

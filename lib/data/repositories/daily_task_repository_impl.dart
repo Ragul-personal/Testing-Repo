@@ -15,12 +15,11 @@ class DailyTaskRepositoryImpl implements DailyTaskRepository {
         ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
   @override
-  List<DailyTaskTemplate> activeTemplates() =>
-      _store.dailyTaskTemplates.values
-          .where((m) => m.active)
-          .map((m) => m.toEntity())
-          .toList()
-        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+  List<DailyTaskTemplate> activeTemplates() => _store.dailyTaskTemplates.values
+      .where((m) => m.active)
+      .map((m) => m.toEntity())
+      .toList()
+    ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
   @override
   DailyTaskTemplate? templateById(String id) =>

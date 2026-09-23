@@ -156,13 +156,15 @@ class AttachmentService {
         final dir = await _dirFor(toSubtopicId);
         final name = a.target.split('/').last;
         final dest = await File(a.target).rename('${dir.path}/$name');
-        out.add(Attachment(
-          id: a.id,
-          kind: a.kind,
-          target: dest.path,
-          name: a.name,
-          addedAt: a.addedAt,
-        ));
+        out.add(
+          Attachment(
+            id: a.id,
+            kind: a.kind,
+            target: dest.path,
+            name: a.name,
+            addedAt: a.addedAt,
+          ),
+        );
       } catch (e) {
         debugPrint('[attachments] reparent failed: $e');
         out.add(a);

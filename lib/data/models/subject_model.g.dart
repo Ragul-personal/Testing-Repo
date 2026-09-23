@@ -30,12 +30,18 @@ class SubjectModelAdapter extends TypeAdapter<SubjectModel> {
   void write(BinaryWriter writer, SubjectModel obj) {
     writer
       ..writeByte(6)
-      ..writeByte(0)..write(obj.id)
-      ..writeByte(1)..write(obj.name)
-      ..writeByte(2)..write(obj.colorValue)
-      ..writeByte(3)..write(obj.iconKey)
-      ..writeByte(4)..write(obj.createdAt)
-      ..writeByte(5)..write(obj.archived);
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.colorValue)
+      ..writeByte(3)
+      ..write(obj.iconKey)
+      ..writeByte(4)
+      ..write(obj.createdAt)
+      ..writeByte(5)
+      ..write(obj.archived);
   }
 
   @override

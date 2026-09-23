@@ -49,8 +49,7 @@ final dailyTaskTemplatesProvider = StreamProvider<List<DailyTaskTemplate>>(
   (ref) => ref.watch(dailyTaskRepositoryProvider).watchTemplates(),
 );
 
-final dailyTaskCompletionsProvider =
-    StreamProvider<List<DailyTaskCompletion>>(
+final dailyTaskCompletionsProvider = StreamProvider<List<DailyTaskCompletion>>(
   (ref) => ref.watch(dailyTaskRepositoryProvider).watchCompletions(),
 );
 
@@ -85,6 +84,7 @@ final dailyTaskProgressProvider = Provider<DailyTaskProgress>((ref) {
   final tasks = ref.watch(activeDailyTasksProvider);
   final completions = ref.watch(todayCompletionsProvider);
   final total = tasks.length;
-  final completed = tasks.where((t) => completions[t.id]?.completed == true).length;
+  final completed =
+      tasks.where((t) => completions[t.id]?.completed == true).length;
   return DailyTaskProgress(total: total, completed: completed);
 });

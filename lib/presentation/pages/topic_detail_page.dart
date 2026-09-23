@@ -59,9 +59,8 @@ class TopicDetailPage extends ConsumerWidget {
     );
 
     final due = subtopics.where((s) => s.isDue).length;
-    final mastered = subtopics
-        .where((s) => s.status == SubtopicStatus.completed)
-        .length;
+    final mastered =
+        subtopics.where((s) => s.status == SubtopicStatus.completed).length;
     final success = StatusColors.success(context);
 
     Future<void> confirmAndDelete() async {
@@ -138,7 +137,6 @@ class TopicDetailPage extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.sm),
               ],
             ),
-
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
@@ -158,8 +156,7 @@ class TopicDetailPage extends ConsumerWidget {
                         // from Today rather than by drilling down.
                         if (subject != null)
                           InkWell(
-                            onTap: () =>
-                                context.push('/subject/${subject.id}'),
+                            onTap: () => context.push('/subject/${subject.id}'),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2),
                               child: Row(
@@ -218,7 +215,6 @@ class TopicDetailPage extends ConsumerWidget {
                 ),
               ),
             ),
-
             if (subtopics.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,

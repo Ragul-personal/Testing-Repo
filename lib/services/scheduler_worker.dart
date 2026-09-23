@@ -73,7 +73,6 @@ class SchedulerBootstrap {
   static Future<void> initWorkmanager() async {
     await Workmanager().initialize(
       schedulerCallbackDispatcher,
-      isInDebugMode: kDebugMode,
     );
     // Defaults are right for an offline-only use case: no network or charging
     // constraints, and periodic tasks default to KEEP so re-registering on

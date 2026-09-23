@@ -31,72 +31,71 @@ class SubjectsPage extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
-            TabAppBar(
-              title: 'Subjects',
-              subtitle: subjects.isEmpty
-                  ? null
-                  : '${subjects.length} subject'
-                      '${subjects.length == 1 ? '' : 's'} · '
-                      '${topics.length} topic${topics.length == 1 ? '' : 's'} · '
-                      '${subtopics.length} subtopic'
-                      '${subtopics.length == 1 ? '' : 's'}',
-            ),
-            if (subjects.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyState(
-                  icon: Icons.folder_open_rounded,
-                  title: 'No subjects yet',
-                  subtitle:
-                      'Subjects group your topics — Algorithms, Anatomy, '
-                      'Spanish. Create one to get started.',
-                  action: FilledButton.icon(
-                    onPressed: () => context.push('/create/subject'),
-                    icon: const Icon(Icons.add_rounded, size: 20),
-                    label: const Text('New subject'),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.gutter,
-                  AppSpacing.xs,
-                  AppSpacing.gutter,
-                  AppSpacing.bottomInset,
-                ),
-                sliver: SliverList.separated(
-                  itemCount: subjects.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: AppSpacing.sm),
-                  itemBuilder: (_, i) {
-                    final s = subjects[i];
-                    final myTopics =
-                        topics.where((t) => t.subjectId == s.id).length;
-                    final mySubtopics =
-                        subtopics.where((x) => x.subjectId == s.id).toList();
-                    return FadeSlideIn(
-                      index: i,
-                      child: _SubjectRow(
-                        name: s.name,
-                        color: s.color,
-                        iconKey: s.iconKey,
-                        topics: myTopics,
-                        subtopics: mySubtopics.length,
-                        due: mySubtopics.where((x) => x.isDue).length,
-                        onTap: () => context.push('/subject/${s.id}'),
-                        onLongPress: () => _showActions(
-                          context,
-                          ref,
-                          s.id,
-                          s.name,
-                          myTopics,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+        TabAppBar(
+          title: 'Subjects',
+          subtitle: subjects.isEmpty
+              ? null
+              : '${subjects.length} subject'
+                  '${subjects.length == 1 ? '' : 's'} · '
+                  '${topics.length} topic${topics.length == 1 ? '' : 's'} · '
+                  '${subtopics.length} subtopic'
+                  '${subtopics.length == 1 ? '' : 's'}',
+        ),
+        if (subjects.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(
+              icon: Icons.folder_open_rounded,
+              title: 'No subjects yet',
+              subtitle: 'Subjects group your topics — Algorithms, Anatomy, '
+                  'Spanish. Create one to get started.',
+              action: FilledButton.icon(
+                onPressed: () => context.push('/create/subject'),
+                icon: const Icon(Icons.add_rounded, size: 20),
+                label: const Text('New subject'),
               ),
+            ),
+          )
+        else
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.gutter,
+              AppSpacing.xs,
+              AppSpacing.gutter,
+              AppSpacing.bottomInset,
+            ),
+            sliver: SliverList.separated(
+              itemCount: subjects.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.sm),
+              itemBuilder: (_, i) {
+                final s = subjects[i];
+                final myTopics =
+                    topics.where((t) => t.subjectId == s.id).length;
+                final mySubtopics =
+                    subtopics.where((x) => x.subjectId == s.id).toList();
+                return FadeSlideIn(
+                  index: i,
+                  child: _SubjectRow(
+                    name: s.name,
+                    color: s.color,
+                    iconKey: s.iconKey,
+                    topics: myTopics,
+                    subtopics: mySubtopics.length,
+                    due: mySubtopics.where((x) => x.isDue).length,
+                    onTap: () => context.push('/subject/${s.id}'),
+                    onLongPress: () => _showActions(
+                      context,
+                      ref,
+                      s.id,
+                      s.name,
+                      myTopics,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
       ],
     );
   }

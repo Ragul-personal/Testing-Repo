@@ -46,7 +46,8 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
       } else if (_mode == 'week') {
         _selectedDate = _selectedDate.subtract(const Duration(days: 7));
       } else if (_mode == 'month') {
-        _selectedDate = DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
+        _selectedDate =
+            DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
       }
     });
   }
@@ -58,7 +59,8 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
       } else if (_mode == 'week') {
         _selectedDate = _selectedDate.add(const Duration(days: 7));
       } else if (_mode == 'month') {
-        _selectedDate = DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
+        _selectedDate =
+            DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
       }
     });
   }
@@ -80,7 +82,6 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final tt = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -104,7 +105,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
               },
             ),
           ),
-          
+
           // Date selector
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
@@ -119,7 +120,8 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
                   child: Text(
                     _formatDateTitle(),
                     textAlign: TextAlign.center,
-                    style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style:
+                        tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
@@ -129,9 +131,9 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
               ],
             ),
           ),
-          
+
           const SizedBox(height: AppSpacing.md),
-          
+
           // Content
           Expanded(
             child: _buildContent(),
@@ -156,7 +158,8 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
 
   Widget _buildContent() {
     if (_mode == 'day') return _buildDayView();
-    if (_mode == 'week') return _buildAggregateView(_getWeekDates(_selectedDate));
+    if (_mode == 'week')
+      return _buildAggregateView(_getWeekDates(_selectedDate));
     return _buildAggregateView(_getMonthDates(_selectedDate));
   }
 
@@ -169,7 +172,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
     final tt = Theme.of(context).textTheme;
 
     if (tasks.isEmpty) {
-      return EmptyState(
+      return const EmptyState(
         icon: Icons.history_rounded,
         title: 'No tasks scheduled',
         subtitle: 'No tasks were active on this date.',
@@ -198,7 +201,8 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
                       ),
                       Text(
                         '${progress.percentage.round()}%',
-                        style: tt.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: tt.labelSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -218,7 +222,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
               final task = tasks[index];
               final done = completions[task.id]?.completed == true;
               final streak = ref.watch(taskStreakProvider(task.id));
-              
+
               return ListTile(
                 leading: Icon(
                   done ? Icons.check_circle_rounded : Icons.circle_outlined,
@@ -230,9 +234,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
                     decoration: done ? TextDecoration.lineThrough : null,
                   ),
                 ),
-                subtitle: streak > 1
-                    ? Text('🔥 $streak day streak')
-                    : null,
+                subtitle: streak > 1 ? Text('🔥 $streak day streak') : null,
                 onTap: () {
                   commands.toggleCompletion(
                     taskTemplateId: task.id,
@@ -261,7 +263,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
     final tt = Theme.of(context).textTheme;
 
     if (agg.taskRecords.isEmpty) {
-      return EmptyState(
+      return const EmptyState(
         icon: Icons.auto_graph_rounded,
         title: 'No data',
         subtitle: 'No tasks were scheduled during this period.',
@@ -307,8 +309,10 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
             (context, index) {
               final rec = agg.taskRecords[index];
               // To get task title we need all templates.
-              final allTemplates = ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? [];
-              final t = allTemplates.where((x) => x.id == rec.taskId).firstOrNull;
+              final allTemplates =
+                  ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? [];
+              final t =
+                  allTemplates.where((x) => x.id == rec.taskId).firstOrNull;
               if (t == null) return const SizedBox.shrink();
 
               return ListTile(

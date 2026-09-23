@@ -39,8 +39,7 @@ class CreateSubtopicPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CreateSubtopicPage> createState() =>
-      _CreateSubtopicPageState();
+  ConsumerState<CreateSubtopicPage> createState() => _CreateSubtopicPageState();
 }
 
 class _CreateSubtopicPageState extends ConsumerState<CreateSubtopicPage> {
@@ -278,8 +277,7 @@ class _CreateSubtopicPageState extends ConsumerState<CreateSubtopicPage> {
                   ? const _AwaitingSubjectNotice()
                   : topics.isEmpty
                       ? _MissingParentNotice(
-                          message:
-                              'This subject has no topics yet. Add one to '
+                          message: 'This subject has no topics yet. Add one to '
                               'file your subtopics under.',
                           buttonLabel: 'New topic',
                           onCreate: () => _createTopicInline(subjectId),

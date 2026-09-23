@@ -69,8 +69,8 @@ class Attachment {
         ),
         target: j['target'] as String,
         name: (j['name'] as String?) ?? 'Attachment',
-        addedAt: DateTime.tryParse(j['addedAt'] as String? ?? '') ??
-            DateTime.now(),
+        addedAt:
+            DateTime.tryParse(j['addedAt'] as String? ?? '') ?? DateTime.now(),
       );
 
   String encode() => jsonEncode(toJson());
@@ -105,10 +105,35 @@ class Attachment {
   /// in-app is a separate question; see [rendersInApp].
   static AttachmentKind kindForPath(String path) {
     final ext = extensionOf(path);
-    const images = {'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'wbmp', 'heic',
-        'heif', 'avif', 'tiff', 'tif', 'svg'};
-    const videos = {'mp4', 'mov', 'mkv', 'avi', 'webm', '3gp', 'm4v', 'wmv',
-        'flv', 'mpg', 'mpeg', 'ts'};
+    const images = {
+      'jpg',
+      'jpeg',
+      'png',
+      'gif',
+      'webp',
+      'bmp',
+      'wbmp',
+      'heic',
+      'heif',
+      'avif',
+      'tiff',
+      'tif',
+      'svg',
+    };
+    const videos = {
+      'mp4',
+      'mov',
+      'mkv',
+      'avi',
+      'webm',
+      '3gp',
+      'm4v',
+      'wmv',
+      'flv',
+      'mpg',
+      'mpeg',
+      'ts',
+    };
     if (images.contains(ext)) return AttachmentKind.image;
     if (videos.contains(ext)) return AttachmentKind.video;
     return AttachmentKind.file;
@@ -121,13 +146,25 @@ class Attachment {
   /// photo should be, so those are handed to the phone's gallery instead,
   /// which decodes them natively.
   static const Set<String> _flutterImages = {
-    'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'wbmp',
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp',
+    'bmp',
+    'wbmp',
   };
 
   /// Containers ExoPlayer handles on Android. AVI, WMV and FLV are not among
   /// them, so those go to whichever video app the user has.
   static const Set<String> _androidVideos = {
-    'mp4', 'm4v', 'mkv', 'webm', '3gp', 'mov', 'ts',
+    'mp4',
+    'm4v',
+    'mkv',
+    'webm',
+    '3gp',
+    'mov',
+    'ts',
   };
 
   /// Whether the app's own viewer can actually display this file.

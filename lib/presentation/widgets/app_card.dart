@@ -124,9 +124,7 @@ class AppPill extends StatelessWidget {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: tonal
-            ? c.withValues(alpha: 0.12)
-            : cs.surfaceContainerHigh,
+        color: tonal ? c.withValues(alpha: 0.12) : cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
       child: Row(

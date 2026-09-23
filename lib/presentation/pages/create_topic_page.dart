@@ -127,7 +127,6 @@ class _CreateTopicPageState extends ConsumerState<CreateTopicPage> {
                 ),
               ),
             ),
-
             FormSection(
               label: 'Subject',
               child: subjects.isEmpty
@@ -175,7 +174,6 @@ class _CreateTopicPageState extends ConsumerState<CreateTopicPage> {
                       },
                     ),
             ),
-
             if (_isEdit) ...[
               AppCard(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -199,7 +197,6 @@ class _CreateTopicPageState extends ConsumerState<CreateTopicPage> {
               ),
               const SizedBox(height: AppSpacing.xxl),
             ],
-
             FilledButton(
               onPressed: _busy ? null : _save,
               child: Text(_isEdit ? 'Save changes' : 'Create topic'),

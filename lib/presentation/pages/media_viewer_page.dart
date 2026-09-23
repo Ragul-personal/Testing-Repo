@@ -54,8 +54,7 @@ Future<String?> openAttachment(BuildContext context, Attachment a) async {
     case AttachmentKind.link:
       final uri = Uri.tryParse(a.target);
       if (uri == null) return 'That link looks malformed.';
-      final ok =
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
       return ok ? null : 'No browser could open that link.';
   }
 }
@@ -90,8 +89,11 @@ class _OpenExternallyFallback extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded,
-              color: Colors.white70, size: 34),
+          const Icon(
+            Icons.error_outline_rounded,
+            color: Colors.white70,
+            size: 34,
+          ),
           const SizedBox(height: AppSpacing.lg),
           Text(
             message,

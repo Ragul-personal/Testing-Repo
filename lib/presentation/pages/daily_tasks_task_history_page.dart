@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/date_utils.dart';
-import '../providers/daily_task_analytics_providers.dart';
 import '../providers/daily_task_providers.dart';
-import '../providers/providers.dart';
 import '../widgets/empty_state.dart';
 
 class DailyTasksTaskHistoryPage extends ConsumerWidget {
@@ -15,13 +13,14 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final allTemplates = ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? [];
+    final allTemplates =
+        ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? [];
     final template = allTemplates.where((t) => t.id == taskId).firstOrNull;
 
     if (template == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Task History')),
-        body: EmptyState(
+        body: const EmptyState(
           icon: Icons.error_outline,
           title: 'Task not found',
           subtitle: 'The task may have been deleted.',
@@ -32,10 +31,13 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final streak = ref.watch(taskStreakProvider(taskId));
-    
+
     // Get all completions for this task to show history list
-    final allCompletions = ref.watch(dailyTaskCompletionsProvider).valueOrNull ?? [];
-    final myCompletions = allCompletions.where((c) => c.taskTemplateId == taskId).toList()
+    final allCompletions =
+        ref.watch(dailyTaskCompletionsProvider).valueOrNull ?? [];
+    final myCompletions = allCompletions
+        .where((c) => c.taskTemplateId == taskId)
+        .toList()
       ..sort((a, b) => b.date.compareTo(a.date)); // descending
 
     return Scaffold(
@@ -52,13 +54,18 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: Colors.orange.withOpacity(0.5)),
+                        border: Border.all(
+                            color: Colors.orange.withValues(alpha: 0.5)),
                       ),
                       child: Column(
                         children: [
-                          const Icon(Icons.local_fire_department_rounded, color: Colors.orange, size: 48),
+                          const Icon(
+                            Icons.local_fire_department_rounded,
+                            color: Colors.orange,
+                            size: 48,
+                          ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             '$streak Day Streak',
@@ -70,7 +77,6 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
                         ],
                       ),
                     ),
-                  
                   const SizedBox(height: AppSpacing.lg),
                   Text('Recent History', style: tt.titleMedium),
                   const SizedBox(height: AppSpacing.sm),
@@ -78,7 +84,6 @@ class DailyTasksTaskHistoryPage extends ConsumerWidget {
               ),
             ),
           ),
-          
           if (myCompletions.isEmpty)
             SliverToBoxAdapter(
               child: Padding(

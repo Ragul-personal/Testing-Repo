@@ -17,31 +17,54 @@ part 'subtopic_model.g.dart';
 /// database. Don't.
 @HiveType(typeId: 2)
 class SubtopicModel extends HiveObject {
-  @HiveField(0) String id;
-  @HiveField(1) String subjectId;
-  @HiveField(2) String title;
-  @HiveField(3) String? notes;
-  @HiveField(4) List<String> tags;
-  @HiveField(5) int priorityIndex;       // Priority.index
-  @HiveField(6) int difficultyIndex;     // Difficulty.index
-  @HiveField(7) int estimatedMinutes;
-  @HiveField(8) DateTime createdAt;
-  @HiveField(9) int repetitions;
-  @HiveField(10) double ease;
-  @HiveField(11) int currentIntervalDays;
-  @HiveField(12) int ladderIndex;
-  @HiveField(13) DateTime nextDueAt;
-  @HiveField(14) DateTime? lastReviewedAt;
-  @HiveField(15) int statusIndex;        // SubtopicStatus.index
-  @HiveField(16) int reminderHour;
-  @HiveField(17) int reminderMinute;
-  @HiveField(18) bool persistentReminders;
+  @HiveField(0)
+  String id;
+  @HiveField(1)
+  String subjectId;
+  @HiveField(2)
+  String title;
+  @HiveField(3)
+  String? notes;
+  @HiveField(4)
+  List<String> tags;
+  @HiveField(5)
+  int priorityIndex; // Priority.index
+  @HiveField(6)
+  int difficultyIndex; // Difficulty.index
+  @HiveField(7)
+  int estimatedMinutes;
+  @HiveField(8)
+  DateTime createdAt;
+  @HiveField(9)
+  int repetitions;
+  @HiveField(10)
+  double ease;
+  @HiveField(11)
+  int currentIntervalDays;
+  @HiveField(12)
+  int ladderIndex;
+  @HiveField(13)
+  DateTime nextDueAt;
+  @HiveField(14)
+  DateTime? lastReviewedAt;
+  @HiveField(15)
+  int statusIndex; // SubtopicStatus.index
+  @HiveField(16)
+  int reminderHour;
+  @HiveField(17)
+  int reminderMinute;
+  @HiveField(18)
+  bool persistentReminders;
+
   /// JSON-encoded [Attachment]s. A List<String> needs no Hive adapter,
   /// so this was added without registering a new typeId.
-  @HiveField(19) List<String> attachments;
+  @HiveField(19)
+  List<String> attachments;
+
   /// Parent topic. Empty on records written by an earlier build; the migration
   /// gives each of those a topic of its own rather than leaving it unfiled.
-  @HiveField(20) String topicId;
+  @HiveField(20)
+  String topicId;
 
   SubtopicModel({
     required this.id,
@@ -124,17 +147,25 @@ class SubtopicModel extends HiveObject {
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id, 'subjectId': subjectId, 'topicId': topicId,
-        'title': title, 'notes': notes,
-        'tags': tags, 'priorityIndex': priorityIndex,
-        'difficultyIndex': difficultyIndex, 'estimatedMinutes': estimatedMinutes,
+        'id': id,
+        'subjectId': subjectId,
+        'topicId': topicId,
+        'title': title,
+        'notes': notes,
+        'tags': tags,
+        'priorityIndex': priorityIndex,
+        'difficultyIndex': difficultyIndex,
+        'estimatedMinutes': estimatedMinutes,
         'createdAt': createdAt.toIso8601String(),
-        'repetitions': repetitions, 'ease': ease,
-        'currentIntervalDays': currentIntervalDays, 'ladderIndex': ladderIndex,
+        'repetitions': repetitions,
+        'ease': ease,
+        'currentIntervalDays': currentIntervalDays,
+        'ladderIndex': ladderIndex,
         'nextDueAt': nextDueAt.toIso8601String(),
         'lastReviewedAt': lastReviewedAt?.toIso8601String(),
         'statusIndex': statusIndex,
-        'reminderHour': reminderHour, 'reminderMinute': reminderMinute,
+        'reminderHour': reminderHour,
+        'reminderMinute': reminderMinute,
         'persistentReminders': persistentReminders,
         'attachments': attachments,
       };
@@ -164,7 +195,6 @@ class SubtopicModel extends HiveObject {
         reminderHour: (j['reminderHour'] as int?) ?? _legacyReminderHour,
         reminderMinute: (j['reminderMinute'] as int?) ?? 0,
         persistentReminders: (j['persistentReminders'] as bool?) ?? true,
-        attachments:
-            (j['attachments'] as List?)?.cast<String>() ?? const [],
+        attachments: (j['attachments'] as List?)?.cast<String>() ?? const [],
       );
 }

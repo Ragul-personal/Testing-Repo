@@ -55,7 +55,8 @@ void main() {
 
     test('next due time is anchored to the reminder hour/minute', () {
       final t = _seed(ladderIdx: 0).copyWith(
-        reminderHour: 9, reminderMinute: 30,
+        reminderHour: 9,
+        reminderMinute: 30,
       );
       final r = engine.schedule(t, ReviewRating.good, now: ref);
       expect(r.nextDueAt.hour, 9);
@@ -215,11 +216,23 @@ void main() {
     final ref = DateTime(2024, 1, 1, 12);
 
     test('ease is always within [easeFloor, easeCeiling]', () {
-      final easies = List.generate(20, (_) =>
-          engine.schedule(_seed(reps: 5, ease: 2.99, currentInterval: 30),
-              ReviewRating.easy, now: ref));
+      final easies = List.generate(
+        20,
+        (_) => engine.schedule(
+          _seed(
+            reps: 5,
+            ease: 2.99,
+            currentInterval: 30,
+          ),
+          ReviewRating.easy,
+          now: ref,
+        ),
+      );
       for (final r in easies) {
-        expect(r.newEase, lessThanOrEqualTo(SpacedRepetitionEngine.easeCeiling));
+        expect(
+          r.newEase,
+          lessThanOrEqualTo(SpacedRepetitionEngine.easeCeiling),
+        );
       }
     });
 

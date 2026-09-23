@@ -27,12 +27,18 @@ class ReviewModelAdapter extends TypeAdapter<ReviewModel> {
   void write(BinaryWriter writer, ReviewModel obj) {
     writer
       ..writeByte(6)
-      ..writeByte(0)..write(obj.id)
-      ..writeByte(1)..write(obj.subtopicId)
-      ..writeByte(2)..write(obj.reviewedAt)
-      ..writeByte(3)..write(obj.ratingIndex)
-      ..writeByte(4)..write(obj.intervalAppliedDays)
-      ..writeByte(5)..write(obj.easeAfter);
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.subtopicId)
+      ..writeByte(2)
+      ..write(obj.reviewedAt)
+      ..writeByte(3)
+      ..write(obj.ratingIndex)
+      ..writeByte(4)
+      ..write(obj.intervalAppliedDays)
+      ..writeByte(5)
+      ..write(obj.easeAfter);
   }
 
   @override

@@ -70,7 +70,8 @@ class NotificationService {
   static const String _actionSnooze = 'snooze';
   static const String _actionSkip = 'skip';
 
-  final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _fln =
+      FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
@@ -125,15 +126,17 @@ class NotificationService {
     // channel creation (a real bug we hit in early builds on Pixel 6).
     final android = _fln.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
-    await android?.createNotificationChannel(const AndroidNotificationChannel(
-      _channelId,
-      _channelName,
-      description: _channelDesc,
-      importance: Importance.max,
-      enableVibration: true,
-      playSound: true,
-      enableLights: true,
-    ));
+    await android?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        description: _channelDesc,
+        importance: Importance.max,
+        enableVibration: true,
+        playSound: true,
+        enableLights: true,
+      ),
+    );
 
     _initialized = true;
   }
@@ -309,9 +312,8 @@ class NotificationService {
       if (count <= 0) return;
 
       final plural = count == 1 ? '' : 's';
-      final title = slot == DigestSlot.morning
-          ? 'Good morning'
-          : 'Good evening';
+      final title =
+          slot == DigestSlot.morning ? 'Good morning' : 'Good evening';
       final body = slot == DigestSlot.morning
           ? 'You have $count subtopic$plural to revise today. A good time to '
               'start while it is fresh.'
@@ -324,7 +326,10 @@ class NotificationService {
       final mode = await _preferredScheduleMode();
       try {
         await _fln.zonedSchedule(
-          id, title, body, scheduled,
+          id,
+          title,
+          body,
+          scheduled,
           _details(title: title, body: body),
           androidScheduleMode: mode,
           uiLocalNotificationDateInterpretation:
@@ -334,7 +339,10 @@ class NotificationService {
         if (mode == AndroidScheduleMode.exactAllowWhileIdle) {
           _exactAlarmsAllowed = false;
           await _fln.zonedSchedule(
-            id, title, body, scheduled,
+            id,
+            title,
+            body,
+            scheduled,
             _details(title: title, body: body),
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
             uiLocalNotificationDateInterpretation:
@@ -395,10 +403,17 @@ class NotificationService {
       // channel can surface errors as well as exceptions, and a reminder that
       // arrives late is strictly better than one that never arrives.
       if (mode == AndroidScheduleMode.exactAllowWhileIdle) {
-        debugPrint('[notifications] exact alarm rejected ($e) — retrying inexact');
+        debugPrint(
+          '[notifications] exact alarm rejected ($e) — retrying inexact',
+        );
         _exactAlarmsAllowed = false;
-        await _zonedSchedule(subtopic, when, id, where,
-            AndroidScheduleMode.inexactAllowWhileIdle);
+        await _zonedSchedule(
+          subtopic,
+          when,
+          id,
+          where,
+          AndroidScheduleMode.inexactAllowWhileIdle,
+        );
       } else {
         rethrow;
       }
@@ -551,12 +566,24 @@ class NotificationService {
           // is simpler, more reliable, and matches user expectations
           // ("tapping Done should open the app and confirm the review").
           actions: const <AndroidNotificationAction>[
-            AndroidNotificationAction(_actionDone, 'Done',
-                showsUserInterface: true, cancelNotification: true),
-            AndroidNotificationAction(_actionSnooze, 'Snooze 1h',
-                showsUserInterface: true, cancelNotification: true),
-            AndroidNotificationAction(_actionSkip, 'Skip',
-                showsUserInterface: true, cancelNotification: true),
+            AndroidNotificationAction(
+              _actionDone,
+              'Done',
+              showsUserInterface: true,
+              cancelNotification: true,
+            ),
+            AndroidNotificationAction(
+              _actionSnooze,
+              'Snooze 1h',
+              showsUserInterface: true,
+              cancelNotification: true,
+            ),
+            AndroidNotificationAction(
+              _actionSkip,
+              'Skip',
+              showsUserInterface: true,
+              cancelNotification: true,
+            ),
           ],
         ),
       );

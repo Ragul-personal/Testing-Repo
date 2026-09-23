@@ -146,8 +146,7 @@ class SubtopicCard extends StatelessWidget {
                             subjectName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style:
-                                tt.labelSmall?.copyWith(color: subjectColor),
+                            style: tt.labelSmall?.copyWith(color: subjectColor),
                           ),
                         ),
                         Text('  ·  ', style: tt.labelSmall),

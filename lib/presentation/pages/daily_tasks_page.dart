@@ -94,8 +94,7 @@ class DailyTasksPage extends ConsumerWidget {
                                   value: progress.total > 0
                                       ? progress.completed / progress.total
                                       : 0,
-                                  backgroundColor:
-                                      cs.surfaceContainerHighest,
+                                  backgroundColor: cs.surfaceContainerHighest,
                                   color: cs.primary,
                                   strokeWidth: 6,
                                 ),
@@ -156,7 +155,8 @@ class DailyTasksPage extends ConsumerWidget {
                           maxDays: 7,
                           onDayTap: (date) {
                             context.push(
-                                '/daily-tasks/history/day/${date.toIso8601String()}');
+                              '/daily-tasks/history/day/${date.toIso8601String()}',
+                            );
                           },
                         ),
                       ],
@@ -182,8 +182,7 @@ class DailyTasksPage extends ConsumerWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final task = tasks[index];
-                      final done =
-                          completions[task.id]?.completed == true;
+                      final done = completions[task.id]?.completed == true;
                       return _TaskTile(
                         task: task,
                         done: done,
@@ -301,9 +300,7 @@ class _TaskTile extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  done
-                      ? Icons.check_circle_rounded
-                      : Icons.circle_outlined,
+                  done ? Icons.check_circle_rounded : Icons.circle_outlined,
                   color: done ? cs.primary : cs.outline,
                   size: 24,
                 ),
@@ -312,11 +309,8 @@ class _TaskTile extends StatelessWidget {
                   child: Text(
                     task.title,
                     style: tt.bodyLarge?.copyWith(
-                      decoration:
-                          done ? TextDecoration.lineThrough : null,
-                      color: done
-                          ? cs.onSurfaceVariant
-                          : cs.onSurface,
+                      decoration: done ? TextDecoration.lineThrough : null,
+                      color: done ? cs.onSurfaceVariant : cs.onSurface,
                     ),
                   ),
                 ),
@@ -328,5 +322,3 @@ class _TaskTile extends StatelessWidget {
     );
   }
 }
-
-

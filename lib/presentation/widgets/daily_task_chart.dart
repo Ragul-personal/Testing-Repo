@@ -48,7 +48,7 @@ class DailyTaskChart extends StatelessWidget {
           final totalWidth =
               barWidth * visible.length + 8.0 * (visible.length - 1);
           final startX = (size.width - totalWidth) / 2;
-          
+
           final dx = details.localPosition.dx;
           for (int i = 0; i < visible.length; i++) {
             final x = startX + i * (barWidth + 8.0);

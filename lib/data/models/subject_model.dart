@@ -7,12 +7,18 @@ part 'subject_model.g.dart';
 /// renumber after the app ships, or you will corrupt user databases.
 @HiveType(typeId: 1)
 class SubjectModel extends HiveObject {
-  @HiveField(0) String id;
-  @HiveField(1) String name;
-  @HiveField(2) int colorValue;
-  @HiveField(3) String iconKey;
-  @HiveField(4) DateTime createdAt;
-  @HiveField(5) bool archived;
+  @HiveField(0)
+  String id;
+  @HiveField(1)
+  String name;
+  @HiveField(2)
+  int colorValue;
+  @HiveField(3)
+  String iconKey;
+  @HiveField(4)
+  DateTime createdAt;
+  @HiveField(5)
+  bool archived;
 
   SubjectModel({
     required this.id,

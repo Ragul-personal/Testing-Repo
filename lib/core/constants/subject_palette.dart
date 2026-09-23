@@ -22,8 +22,16 @@ class SubjectPalette {
   ];
 
   static const List<String> iconKeys = [
-    'book', 'function', 'cpu', 'network', 'database',
-    'flask', 'compass', 'leaf', 'graph', 'pencil',
+    'book',
+    'function',
+    'cpu',
+    'network',
+    'database',
+    'flask',
+    'compass',
+    'leaf',
+    'graph',
+    'pencil',
   ];
 
   static IconData iconFor(String key) {

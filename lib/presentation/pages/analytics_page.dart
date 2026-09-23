@@ -56,8 +56,7 @@ class AnalyticsPage extends ConsumerWidget {
             child: EmptyState(
               icon: Icons.insights_rounded,
               title: 'Nothing to show yet',
-              subtitle:
-                  'Once you start revising, your streak and history will '
+              subtitle: 'Once you start revising, your streak and history will '
                   'build up here.',
             ),
           ),
@@ -69,11 +68,10 @@ class AnalyticsPage extends ConsumerWidget {
     final weekAgo = now.subtract(const Duration(days: 7));
     final thisWeek = reviews.where((r) => r.reviewedAt.isAfter(weekAgo)).length;
 
-    final mastered = subtopics
-        .where((s) => s.status == SubtopicStatus.completed)
-        .length;
-    final dueToday = ref.watch(dueTodayProvider).length +
-        ref.watch(overdueProvider).length;
+    final mastered =
+        subtopics.where((s) => s.status == SubtopicStatus.completed).length;
+    final dueToday =
+        ref.watch(dueTodayProvider).length + ref.watch(overdueProvider).length;
 
     return CustomScrollView(
       slivers: [
@@ -150,14 +148,12 @@ class AnalyticsPage extends ConsumerWidget {
                   Builder(
                     builder: (_) {
                       final s = subjects[i];
-                      final mine = subtopics
-                          .where((x) => x.subjectId == s.id)
-                          .toList();
+                      final mine =
+                          subtopics.where((x) => x.subjectId == s.id).toList();
                       return FadeSlideIn(
                         index: i,
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppSpacing.sm),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                           child: _SubjectProgress(
                             name: s.name,
                             color: SubjectPalette.readable(
@@ -166,8 +162,9 @@ class AnalyticsPage extends ConsumerWidget {
                             ),
                             total: mine.length,
                             mastered: mine
-                                .where((x) =>
-                                    x.status == SubtopicStatus.completed)
+                                .where(
+                                  (x) => x.status == SubtopicStatus.completed,
+                                )
                                 .length,
                             due: mine.where((x) => x.isDue).length,
                             onTap: () => context.push('/subject/${s.id}'),
@@ -245,7 +242,9 @@ class _StreakCard extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      best > 0 ? 'Best so far: $best days' : 'Revise to start one',
+                      best > 0
+                          ? 'Best so far: $best days'
+                          : 'Revise to start one',
                       style: tt.labelSmall,
                     ),
                   ],
@@ -390,8 +389,7 @@ class _SubjectProgress extends StatelessWidget {
                   style: tt.titleSmall,
                 ),
               ),
-              if (due > 0)
-                AppPill('$due due', color: color, tonal: true),
+              if (due > 0) AppPill('$due due', color: color, tonal: true),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -411,9 +409,7 @@ class _SubjectProgress extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            total == 0
-                ? 'No subtopics yet'
-                : '$mastered of $total mastered',
+            total == 0 ? 'No subtopics yet' : '$mastered of $total mastered',
             style: tt.labelSmall,
           ),
         ],

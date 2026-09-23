@@ -372,8 +372,7 @@ class BackupService {
 
     final json = await saf.readFile(_folderData);
     if (json != null) {
-      final summary =
-          await restoreFromJson(utf8.decode(json), merge: merge);
+      final summary = await restoreFromJson(utf8.decode(json), merge: merge);
       final files = await _pullAttachmentsFromFolder();
       return summary.withFiles(files);
     }
@@ -504,8 +503,6 @@ class BackupService {
     return autoRestoreIfEmpty();
   }
 
-
-
   /// Write now and report. Used on app background and by Settings.
   Future<BackupResult> flush() async {
     while (_writing) {
@@ -530,8 +527,6 @@ class BackupService {
       return null;
     }
   }
-
-
 
   // ------------------------------------------------------------------ export
 
@@ -770,9 +765,8 @@ class BackupService {
     // hand-edited or truncated file is read by what it actually contains.
     final hasTopicLayer = decoded['subtopics'] != null;
     final rawTopics = (decoded['topics'] as List? ?? const []);
-    final rawSubtopics = hasTopicLayer
-        ? (decoded['subtopics'] as List? ?? const [])
-        : rawTopics;
+    final rawSubtopics =
+        hasTopicLayer ? (decoded['subtopics'] as List? ?? const []) : rawTopics;
 
     final store = StorageService.instance;
     if (!merge) {
@@ -833,8 +827,7 @@ class BackupService {
     }
 
     // Daily task templates — absent in older backups, handled gracefully.
-    for (final raw
-        in (decoded['dailyTaskTemplates'] as List? ?? const [])) {
+    for (final raw in (decoded['dailyTaskTemplates'] as List? ?? const [])) {
       try {
         final m = DailyTaskTemplateModel.fromJson(
           raw as Map<String, dynamic>,
@@ -847,8 +840,7 @@ class BackupService {
     }
 
     // Daily task completions — absent in older backups, handled gracefully.
-    for (final raw
-        in (decoded['dailyTaskCompletions'] as List? ?? const [])) {
+    for (final raw in (decoded['dailyTaskCompletions'] as List? ?? const [])) {
       try {
         final m = DailyTaskCompletionModel.fromJson(
           raw as Map<String, dynamic>,

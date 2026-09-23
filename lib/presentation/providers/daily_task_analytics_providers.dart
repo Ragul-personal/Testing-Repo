@@ -47,9 +47,7 @@ final historicalScheduledTasksProvider =
     Provider.family<List<DailyTaskTemplate>, DateTime>((ref, date) {
   final allTemplates =
       ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? const [];
-  return allTemplates
-      .where((t) => isTaskScheduledOnDate(t, date))
-      .toList()
+  return allTemplates.where((t) => isTaskScheduledOnDate(t, date)).toList()
     ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 });
 
@@ -118,16 +116,21 @@ final taskStreakProvider = Provider.family<int, String>((ref, taskId) {
     final date = today.subtract(Duration(days: i));
 
     if (!isTaskScheduledOnDate(template, date)) {
-      if (template.createdAt.isAfter(DateTime(date.year, date.month, date.day, 23, 59, 59))) {
+      if (template.createdAt
+          .isAfter(DateTime(date.year, date.month, date.day, 23, 59, 59))) {
         break; // reached before creation
       }
       continue; // skip unscheduled days (e.g. while archived)
     }
 
-    final c = completions.where((c) =>
-        c.date.year == date.year &&
-        c.date.month == date.month &&
-        c.date.day == date.day).firstOrNull;
+    final c = completions
+        .where(
+          (c) =>
+              c.date.year == date.year &&
+              c.date.month == date.month &&
+              c.date.day == date.day,
+        )
+        .firstOrNull;
 
     if (c != null && c.completed) {
       streak++;
@@ -144,20 +147,20 @@ final aggregateProgressProvider =
     Provider.family<DailyAggregateProgress, List<DateTime>>((ref, dates) {
   final dailyRecords = <DailyTaskDayRecord>[];
   final taskMap = <String, TaskAggregateProgress>{};
-  
+
   var totalRangeScheduled = 0;
   var totalRangeCompleted = 0;
 
   for (final date in dates) {
     final daily = ref.watch(historicalProgressProvider(date));
     dailyRecords.add(daily);
-    
+
     totalRangeScheduled += daily.total;
     totalRangeCompleted += daily.completed;
 
     final tasks = ref.watch(historicalScheduledTasksProvider(date));
     final completions = ref.watch(historicalCompletionsProvider(date));
-    
+
     for (final t in tasks) {
       final isCompleted = completions[t.id]?.completed == true;
       final existing = taskMap[t.id] ??

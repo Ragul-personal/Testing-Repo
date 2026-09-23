@@ -26,9 +26,7 @@ class DailyTaskCommands {
     final existing = _repo.allTemplates();
     final maxOrder = existing.isEmpty
         ? 0
-        : existing
-            .map((t) => t.sortOrder)
-            .reduce((a, b) => a > b ? a : b);
+        : existing.map((t) => t.sortOrder).reduce((a, b) => a > b ? a : b);
     final template = DailyTaskTemplate(
       id: _uuid.v4(),
       title: title,
@@ -50,20 +48,24 @@ class DailyTaskCommands {
   Future<void> archiveTemplate(String id) async {
     final t = _repo.templateById(id);
     if (t == null) return;
-    await _repo.upsertTemplate(t.copyWith(
-      active: false,
-      archivedAt: DateTime.now(),
-    ));
+    await _repo.upsertTemplate(
+      t.copyWith(
+        active: false,
+        archivedAt: DateTime.now(),
+      ),
+    );
     _backup();
   }
 
   Future<void> restoreTemplate(String id) async {
     final t = _repo.templateById(id);
     if (t == null) return;
-    await _repo.upsertTemplate(t.copyWith(
-      active: true,
-      clearArchivedAt: true,
-    ));
+    await _repo.upsertTemplate(
+      t.copyWith(
+        active: true,
+        clearArchivedAt: true,
+      ),
+    );
     _backup();
   }
 
@@ -85,19 +87,23 @@ class DailyTaskCommands {
     final d = DateTime(date.year, date.month, date.day);
     final existing = _repo.completionFor(taskTemplateId, d);
     if (existing != null) {
-      await _repo.upsertCompletion(existing.copyWith(
-        completed: !existing.completed,
-        completedAt: !existing.completed ? DateTime.now() : null,
-        clearCompletedAt: existing.completed,
-      ));
+      await _repo.upsertCompletion(
+        existing.copyWith(
+          completed: !existing.completed,
+          completedAt: !existing.completed ? DateTime.now() : null,
+          clearCompletedAt: existing.completed,
+        ),
+      );
     } else {
-      await _repo.upsertCompletion(DailyTaskCompletion(
-        id: _uuid.v4(),
-        taskTemplateId: taskTemplateId,
-        date: d,
-        completed: true,
-        completedAt: DateTime.now(),
-      ));
+      await _repo.upsertCompletion(
+        DailyTaskCompletion(
+          id: _uuid.v4(),
+          taskTemplateId: taskTemplateId,
+          date: d,
+          completed: true,
+          completedAt: DateTime.now(),
+        ),
+      );
     }
     _backup();
   }

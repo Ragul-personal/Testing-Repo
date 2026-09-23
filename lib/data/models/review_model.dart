@@ -11,12 +11,18 @@ part 'review_model.g.dart';
 /// which the subtopic layer did not change. Only the Dart identifier moved.
 @HiveType(typeId: 3)
 class ReviewModel extends HiveObject {
-  @HiveField(0) String id;
-  @HiveField(1) String subtopicId;
-  @HiveField(2) DateTime reviewedAt;
-  @HiveField(3) int ratingIndex;
-  @HiveField(4) int intervalAppliedDays;
-  @HiveField(5) double easeAfter;
+  @HiveField(0)
+  String id;
+  @HiveField(1)
+  String subtopicId;
+  @HiveField(2)
+  DateTime reviewedAt;
+  @HiveField(3)
+  int ratingIndex;
+  @HiveField(4)
+  int intervalAppliedDays;
+  @HiveField(5)
+  double easeAfter;
 
   ReviewModel({
     required this.id,

@@ -118,7 +118,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                 AppSpacing.sm,
               ),
               child: TableCalendar<_CalEntry>(
-                firstDay: DateTime.now().subtract(const Duration(days: 365 * 3)),
+                firstDay:
+                    DateTime.now().subtract(const Duration(days: 365 * 3)),
                 lastDay: DateTime.now().add(const Duration(days: 365 * 2)),
                 focusedDay: _focused,
                 startingDayOfWeek: StartingDayOfWeek.monday,
@@ -140,8 +141,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                     // Green = you studied. Solid violet = firm commitment.
                     // Faded violet = forecast only.
                     final done = events.any((e) => e.kind == _Kind.reviewed);
-                    final firm =
-                        events.any((e) => e.kind == _Kind.scheduled);
+                    final firm = events.any((e) => e.kind == _Kind.scheduled);
                     final color = done
                         ? success
                         : firm
@@ -199,7 +199,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
             ),
           ),
         ),
-
         SliverToBoxAdapter(
           child: SectionHeader(
             title: DateLabels.relative(_selected),
@@ -216,7 +215,6 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                   ),
           ),
         ),
-
         if (entries.isEmpty)
           SliverToBoxAdapter(
             child: Padding(
@@ -236,8 +234,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           )
         else
           SliverPadding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
             sliver: SliverList.separated(
               itemCount: entries.length,
               separatorBuilder: (_, __) =>
@@ -255,8 +252,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                     accent: subject?.color ?? cs.primary,
                     onTap: () => context.push('/subtopic/${e.subtopic.id}'),
                     // Same pair of actions as Home, for anything due now.
-                    actionable:
-                        e.kind == _Kind.scheduled && e.subtopic.isDue,
+                    actionable: e.kind == _Kind.scheduled && e.subtopic.isDue,
                   ),
                 );
               },

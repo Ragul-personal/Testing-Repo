@@ -5,10 +5,10 @@ import 'attachment.dart';
 /// User self-rating after a review session. Drives the ease update; only
 /// `forgot` and `easy` change the schedule itself (see [SpacedRepetitionEngine]).
 enum ReviewRating {
-  forgot,   // failed recall — rewind to the first rung, decrease ease
-  hard,     // recalled with difficulty — lower ease, same rung as good
-  good,     // standard — advance one rung
-  easy,     // very confident — skip a rung, raise ease
+  forgot, // failed recall — rewind to the first rung, decrease ease
+  hard, // recalled with difficulty — lower ease, same rung as good
+  good, // standard — advance one rung
+  easy, // very confident — skip a rung, raise ease
 }
 
 enum SubtopicStatus {
@@ -18,6 +18,7 @@ enum SubtopicStatus {
 }
 
 enum Difficulty { easy, medium, hard }
+
 enum Priority { low, medium, high }
 
 /// The leaf of the library: Subject → Topic → **Subtopic**.
@@ -46,7 +47,7 @@ class Subtopic extends Equatable {
   final String subjectId;
   final String topicId;
   final String title;
-  final String? notes;          // markdown
+  final String? notes; // markdown
   final List<String> tags;
   final Priority priority;
   final Difficulty difficulty;
@@ -54,18 +55,18 @@ class Subtopic extends Equatable {
   final DateTime createdAt;
 
   // Spaced repetition state ----------------------------------------------------
-  final int repetitions;           // count of successful (>=hard) reviews
-  final double ease;               // SM-2 ease factor; clamped [1.3, 3.0]
-  final int currentIntervalDays;   // last applied interval in days
-  final int ladderIndex;           // index into the fixed-interval ladder
-  final DateTime nextDueAt;        // next reminder timestamp
+  final int repetitions; // count of successful (>=hard) reviews
+  final double ease; // SM-2 ease factor; clamped [1.3, 3.0]
+  final int currentIntervalDays; // last applied interval in days
+  final int ladderIndex; // index into the fixed-interval ladder
+  final DateTime nextDueAt; // next reminder timestamp
   final DateTime? lastReviewedAt;
   final SubtopicStatus status;
 
   // Reminder configuration -----------------------------------------------------
-  final int reminderHour;          // local hour-of-day, 0..23
-  final int reminderMinute;        // 0..59
-  final bool persistentReminders;  // re-fire daily until reviewed
+  final int reminderHour; // local hour-of-day, 0..23
+  final int reminderMinute; // 0..59
+  final bool persistentReminders; // re-fire daily until reviewed
 
   /// Files, images, videos and links saved against this subtopic.
   final List<Attachment> attachments;
@@ -180,9 +181,26 @@ class Subtopic extends Equatable {
 
   @override
   List<Object?> get props => [
-        id, subjectId, topicId, title, notes, tags, priority, difficulty,
-        estimatedMinutes, createdAt, repetitions, ease, currentIntervalDays,
-        ladderIndex, nextDueAt, lastReviewedAt, status, reminderHour,
-        reminderMinute, persistentReminders, attachments,
+        id,
+        subjectId,
+        topicId,
+        title,
+        notes,
+        tags,
+        priority,
+        difficulty,
+        estimatedMinutes,
+        createdAt,
+        repetitions,
+        ease,
+        currentIntervalDays,
+        ladderIndex,
+        nextDueAt,
+        lastReviewedAt,
+        status,
+        reminderHour,
+        reminderMinute,
+        persistentReminders,
+        attachments,
       ];
 }

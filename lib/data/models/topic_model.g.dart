@@ -25,10 +25,14 @@ class TopicModelAdapter extends TypeAdapter<TopicModel> {
   void write(BinaryWriter writer, TopicModel obj) {
     writer
       ..writeByte(4)
-      ..writeByte(0)..write(obj.id)
-      ..writeByte(1)..write(obj.subjectId)
-      ..writeByte(2)..write(obj.title)
-      ..writeByte(3)..write(obj.createdAt);
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.subjectId)
+      ..writeByte(2)
+      ..write(obj.title)
+      ..writeByte(3)
+      ..write(obj.createdAt);
   }
 
   @override

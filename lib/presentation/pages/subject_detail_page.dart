@@ -41,9 +41,8 @@ class SubjectDetailPage extends ConsumerWidget {
 
     final accent = SubjectPalette.readable(subject.color, theme.brightness);
     final due = subtopics.where((s) => s.isDue).length;
-    final done = subtopics
-        .where((s) => s.status == SubtopicStatus.completed)
-        .length;
+    final done =
+        subtopics.where((s) => s.status == SubtopicStatus.completed).length;
     final success = StatusColors.success(context);
 
     // Grouped once rather than filtered per row: a subject with a lot of
@@ -125,7 +124,6 @@ class SubjectDetailPage extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.sm),
               ],
             ),
-
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
@@ -194,7 +192,6 @@ class SubjectDetailPage extends ConsumerWidget {
                 ),
               ),
             ),
-
             if (topics.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -251,8 +248,9 @@ class SubjectDetailPage extends ConsumerWidget {
                           subtopicCount: mine.length,
                           dueCount: mine.where((s) => s.isDue).length,
                           masteredCount: mine
-                              .where((s) =>
-                                  s.status == SubtopicStatus.completed)
+                              .where(
+                                (s) => s.status == SubtopicStatus.completed,
+                              )
                               .length,
                           onTap: () => context.push('/topic/${t.id}'),
                         ),

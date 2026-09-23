@@ -60,7 +60,9 @@ class _CreateSubjectPageState extends ConsumerState<CreateSubjectPage> {
     if (_name.text.trim().isEmpty) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(const SnackBar(content: Text('Give the subject a name')));
+        ..showSnackBar(
+          const SnackBar(content: Text('Give the subject a name')),
+        );
       return;
     }
     setState(() => _busy = true);

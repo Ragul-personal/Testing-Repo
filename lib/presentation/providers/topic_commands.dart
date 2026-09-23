@@ -37,8 +37,8 @@ class TopicCommands {
       ref.read(topicRepositoryProvider).byId(topicId)?.title;
 
   /// Re-arm one subtopic's alarms with its subject and topic names attached.
-  Future<void> _reschedule(Subtopic s) => NotificationService.instance
-      .scheduleForSubtopic(
+  Future<void> _reschedule(Subtopic s) =>
+      NotificationService.instance.scheduleForSubtopic(
         s,
         subjectName: _subjectName(s.subjectId),
         topicName: _topicName(s.topicId),
@@ -286,8 +286,11 @@ class TopicCommands {
     var newDue = s.nextDueAt;
     if (reminderChanged) {
       newDue = DateTime(
-        s.nextDueAt.year, s.nextDueAt.month, s.nextDueAt.day,
-        reminderHour, reminderMinute,
+        s.nextDueAt.year,
+        s.nextDueAt.month,
+        s.nextDueAt.day,
+        reminderHour,
+        reminderMinute,
       );
     }
 
@@ -369,8 +372,8 @@ class TopicCommands {
     if (s == null) return 0;
 
     final now = DateTime.now();
-    final tomorrow = DateTime(now.year, now.month, now.day)
-        .add(const Duration(days: 1));
+    final tomorrow =
+        DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
     final due = DateTime(
       tomorrow.year,
       tomorrow.month,
@@ -416,8 +419,7 @@ class TopicCommands {
     );
     if (!due.isAfter(now)) due = due.add(const Duration(days: 1));
 
-    final updated =
-        s.copyWith(status: SubtopicStatus.active, nextDueAt: due);
+    final updated = s.copyWith(status: SubtopicStatus.active, nextDueAt: due);
     await repo.upsert(updated);
     await _reschedule(updated);
     _backup();
@@ -529,4 +531,5 @@ class TopicCommands {
   }
 }
 
-final topicCommandsProvider = Provider<TopicCommands>((ref) => TopicCommands(ref));
+final topicCommandsProvider =
+    Provider<TopicCommands>((ref) => TopicCommands(ref));

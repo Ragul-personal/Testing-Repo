@@ -73,8 +73,7 @@ class DailyTasksManagePage extends ConsumerWidget {
                   direction: DismissDirection.endToStart,
                   background: Container(
                     alignment: Alignment.centerRight,
-                    padding:
-                        const EdgeInsets.only(right: AppSpacing.gutter),
+                    padding: const EdgeInsets.only(right: AppSpacing.gutter),
                     color: cs.errorContainer,
                     child: Icon(
                       Icons.archive_outlined,
@@ -100,8 +99,7 @@ class DailyTasksManagePage extends ConsumerWidget {
                         : null,
                     trailing: IconButton(
                       icon: const Icon(Icons.edit_outlined),
-                      onPressed: () =>
-                          _showEditDialog(context, commands, t),
+                      onPressed: () => _showEditDialog(context, commands, t),
                     ),
                   ),
                 );
@@ -212,8 +210,7 @@ class DailyTasksManagePage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('New daily task',
-                style: Theme.of(ctx).textTheme.titleMedium),
+            Text('New daily task', style: Theme.of(ctx).textTheme.titleMedium),
             const SizedBox(height: AppSpacing.lg),
             TextField(
               controller: controller,
@@ -267,8 +264,7 @@ class DailyTasksManagePage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Edit task',
-                style: Theme.of(ctx).textTheme.titleMedium),
+            Text('Edit task', style: Theme.of(ctx).textTheme.titleMedium),
             const SizedBox(height: AppSpacing.lg),
             TextField(
               controller: controller,
@@ -277,8 +273,7 @@ class DailyTasksManagePage extends ConsumerWidget {
               decoration: const InputDecoration(labelText: 'Task name'),
               onSubmitted: (v) {
                 if (v.trim().isNotEmpty) {
-                  commands
-                      .updateTemplate(task.copyWith(title: v.trim()));
+                  commands.updateTemplate(task.copyWith(title: v.trim()));
                   Navigator.pop(ctx);
                 }
               },

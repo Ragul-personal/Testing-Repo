@@ -139,9 +139,13 @@ class SpacedRepetitionEngine {
     var idx = math.min(subtopic.ladderIndex, ladder.length - 1);
     while (dates.length < count) {
       idx = math.min(idx + 1, ladder.length - 1);
-      anchor = DateTime(anchor.year, anchor.month, anchor.day,
-              subtopic.reminderHour, subtopic.reminderMinute)
-          .add(Duration(days: ladder[idx]));
+      anchor = DateTime(
+        anchor.year,
+        anchor.month,
+        anchor.day,
+        subtopic.reminderHour,
+        subtopic.reminderMinute,
+      ).add(Duration(days: ladder[idx]));
       dates.add(anchor);
     }
     return dates;
@@ -150,9 +154,9 @@ class SpacedRepetitionEngine {
   double _updateEase(double current, ReviewRating r) {
     // Anki/SM-2 ease deltas (reformulated for 4-button rating).
     final delta = switch (r) {
-      ReviewRating.easy   =>  0.15,
-      ReviewRating.good   =>  0.00,
-      ReviewRating.hard   => -0.15,
+      ReviewRating.easy => 0.15,
+      ReviewRating.good => 0.00,
+      ReviewRating.hard => -0.15,
       ReviewRating.forgot => -0.20,
     };
     final next = current + delta;

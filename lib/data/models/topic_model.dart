@@ -11,10 +11,14 @@ part 'topic_model.g.dart';
 /// typeIds are permanent: never reuse or renumber one after the app ships.
 @HiveType(typeId: 4)
 class TopicModel extends HiveObject {
-  @HiveField(0) String id;
-  @HiveField(1) String subjectId;
-  @HiveField(2) String title;
-  @HiveField(3) DateTime createdAt;
+  @HiveField(0)
+  String id;
+  @HiveField(1)
+  String subjectId;
+  @HiveField(2)
+  String title;
+  @HiveField(3)
+  DateTime createdAt;
 
   TopicModel({
     required this.id,

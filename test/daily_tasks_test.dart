@@ -162,7 +162,10 @@ void main() {
 
     test('task created same day is scheduled', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: true, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: true,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 23, 10, 0),
       );
       expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), true);
@@ -170,7 +173,10 @@ void main() {
 
     test('task created after date is NOT scheduled', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: true, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: true,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 24, 10, 0),
       );
       expect(isTaskScheduledOnDate(t, DateTime(2026, 9, 23)), false);
@@ -178,7 +184,10 @@ void main() {
 
     test('task archived same day IS scheduled', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: false, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: false,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 20),
         archivedAt: DateTime(2026, 9, 23, 14, 0),
       );
@@ -187,7 +196,10 @@ void main() {
 
     test('task archived before date is NOT scheduled', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: false, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: false,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 20),
         archivedAt: DateTime(2026, 9, 22, 14, 0),
       );
@@ -199,12 +211,17 @@ void main() {
   // Task streak algorithm
   // ═══════════════════════════════════════════════════════════════════════════
   group('task streak calculation', () {
-    int calculateTaskStreak(DailyTaskTemplate template, List<DailyTaskCompletion> completions, DateTime today) {
+    int calculateTaskStreak(
+      DailyTaskTemplate template,
+      List<DailyTaskCompletion> completions,
+      DateTime today,
+    ) {
       bool isTaskScheduledOnDate(DailyTaskTemplate t, DateTime date) {
         final startOfDay = DateTime(date.year, date.month, date.day);
         final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
         if (t.createdAt.isAfter(endOfDay)) return false;
-        if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay)) return false;
+        if (t.archivedAt != null && t.archivedAt!.isBefore(startOfDay))
+          return false;
         return true;
       }
 
@@ -213,16 +230,21 @@ void main() {
         final date = today.subtract(Duration(days: i));
 
         if (!isTaskScheduledOnDate(template, date)) {
-          if (template.createdAt.isAfter(DateTime(date.year, date.month, date.day, 23, 59, 59))) {
+          if (template.createdAt
+              .isAfter(DateTime(date.year, date.month, date.day, 23, 59, 59))) {
             break; // reached before creation
           }
           continue; // skip unscheduled days
         }
 
-        final c = completions.where((c) =>
-            c.date.year == date.year &&
-            c.date.month == date.month &&
-            c.date.day == date.day).firstOrNull;
+        final c = completions
+            .where(
+              (c) =>
+                  c.date.year == date.year &&
+                  c.date.month == date.month &&
+                  c.date.day == date.day,
+            )
+            .firstOrNull;
 
         if (c != null && c.completed) {
           streak++;
@@ -235,14 +257,32 @@ void main() {
 
     test('streak handles skipped days for archived tasks', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: false, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: false,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 20),
         archivedAt: DateTime(2026, 9, 22),
       );
       final completions = [
-        DailyTaskCompletion(id: 'c1', taskTemplateId: '1', date: DateTime(2026, 9, 20), completed: true),
-        DailyTaskCompletion(id: 'c2', taskTemplateId: '1', date: DateTime(2026, 9, 21), completed: true),
-        DailyTaskCompletion(id: 'c3', taskTemplateId: '1', date: DateTime(2026, 9, 22), completed: true),
+        DailyTaskCompletion(
+          id: 'c1',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 20),
+          completed: true,
+        ),
+        DailyTaskCompletion(
+          id: 'c2',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 21),
+          completed: true,
+        ),
+        DailyTaskCompletion(
+          id: 'c3',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 22),
+          completed: true,
+        ),
       ];
       // Today is 24th. Task archived on 22nd. 23rd and 24th are unscheduled. Streak should be 3.
       expect(calculateTaskStreak(t, completions, DateTime(2026, 9, 24)), 3);
@@ -250,14 +290,32 @@ void main() {
 
     test('streak breaks if incomplete', () {
       final t = DailyTaskTemplate(
-        id: '1', title: 'A', active: true, sortOrder: 0,
+        id: '1',
+        title: 'A',
+        active: true,
+        sortOrder: 0,
         createdAt: DateTime(2026, 9, 20),
       );
       final completions = [
-        DailyTaskCompletion(id: 'c1', taskTemplateId: '1', date: DateTime(2026, 9, 20), completed: true),
-        DailyTaskCompletion(id: 'c2', taskTemplateId: '1', date: DateTime(2026, 9, 21), completed: true),
+        DailyTaskCompletion(
+          id: 'c1',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 20),
+          completed: true,
+        ),
+        DailyTaskCompletion(
+          id: 'c2',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 21),
+          completed: true,
+        ),
         // 22nd incomplete
-        DailyTaskCompletion(id: 'c4', taskTemplateId: '1', date: DateTime(2026, 9, 23), completed: true),
+        DailyTaskCompletion(
+          id: 'c4',
+          taskTemplateId: '1',
+          date: DateTime(2026, 9, 23),
+          completed: true,
+        ),
       ];
       expect(calculateTaskStreak(t, completions, DateTime(2026, 9, 23)), 1);
     });
@@ -301,8 +359,7 @@ void main() {
 
       // The completions record 3 tasks scheduled on that day
       expect(sep20Completions.length, 3);
-      final completedCount =
-          sep20Completions.where((c) => c.completed).length;
+      final completedCount = sep20Completions.where((c) => c.completed).length;
       expect(completedCount, 3);
       // 3 / 3 = 100%, even though a 4th task may exist now
     });
@@ -313,7 +370,8 @@ void main() {
   // ═══════════════════════════════════════════════════════════════════════════
 
   group('date boundary behaviour', () {
-    test('completions for different times on the same day are the same date', () {
+    test('completions for different times on the same day are the same date',
+        () {
       final morning = DailyTaskCompletion(
         id: 'c1',
         taskTemplateId: 't1',
@@ -450,8 +508,7 @@ void main() {
         // no 'dailyTaskCompletions' key
       };
 
-      final templates =
-          olderBackup['dailyTaskTemplates'] as List? ?? const [];
+      final templates = olderBackup['dailyTaskTemplates'] as List? ?? const [];
       final completions =
           olderBackup['dailyTaskCompletions'] as List? ?? const [];
       expect(templates, isEmpty);

@@ -41,87 +41,83 @@ class TodayPage extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
-            TabAppBar(
-              title: _greeting(),
-              subtitle: DateLabels.fullDate(today),
-              actions: [
-                IconButton(
-                  tooltip: isDark ? 'Light theme' : 'Dark theme',
-                  icon: Icon(
-                    isDark
-                        ? Icons.light_mode_outlined
-                        : Icons.dark_mode_outlined,
-                  ),
-                  onPressed: () => ref
-                      .read(themeModeProvider.notifier)
-                      .toggle(theme.brightness),
-                ),
-                IconButton(
-                  tooltip: 'Settings',
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () => context.push('/settings'),
-                ),
-              ],
+        TabAppBar(
+          title: _greeting(),
+          subtitle: DateLabels.fullDate(today),
+          actions: [
+            IconButton(
+              tooltip: isDark ? 'Light theme' : 'Dark theme',
+              icon: Icon(
+                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              ),
+              onPressed: () =>
+                  ref.read(themeModeProvider.notifier).toggle(theme.brightness),
             ),
+            IconButton(
+              tooltip: 'Settings',
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => context.push('/settings'),
+            ),
+          ],
+        ),
 
-            // One combined progress card rather than three competing stat
-            // tiles — the day's completion is the thing you actually want.
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.gutter,
-                  AppSpacing.xs,
-                  AppSpacing.gutter,
-                  0,
-                ),
-                child: FadeSlideIn(
-                  child: _DayProgressCard(
-                    pending: pending,
-                    doneToday: doneToday,
-                    streak: streak,
-                  ),
-                ),
+        // One combined progress card rather than three competing stat
+        // tiles — the day's completion is the thing you actually want.
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.gutter,
+              AppSpacing.xs,
+              AppSpacing.gutter,
+              0,
+            ),
+            child: FadeSlideIn(
+              child: _DayProgressCard(
+                pending: pending,
+                doneToday: doneToday,
+                streak: streak,
               ),
             ),
+          ),
+        ),
 
-            if (overdue.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Overdue',
-                  count: overdue.length,
-                  accent: cs.error,
-                ),
-              ),
-              _SubtopicSliver(subtopics: overdue, completable: true),
-            ],
+        if (overdue.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: SectionHeader(
+              title: 'Overdue',
+              count: overdue.length,
+              accent: cs.error,
+            ),
+          ),
+          _SubtopicSliver(subtopics: overdue, completable: true),
+        ],
 
-            if (due.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Due today',
-                  count: due.length,
-                  accent: cs.primary,
-                ),
-              ),
-              _SubtopicSliver(subtopics: due, completable: true),
-            ],
+        if (due.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: SectionHeader(
+              title: 'Due today',
+              count: due.length,
+              accent: cs.primary,
+            ),
+          ),
+          _SubtopicSliver(subtopics: due, completable: true),
+        ],
 
-            if (overdue.isEmpty && due.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyState(
-                  icon: Icons.auto_awesome_rounded,
-                  title: 'Nothing to revise yet',
-                  subtitle:
-                      'Add your first subtopic and RecallDay will remind you '
-                      'to review it at the right moments.',
-                  action: FilledButton.icon(
-                    onPressed: () => context.push('/create/subtopic'),
-                    icon: const Icon(Icons.add_rounded, size: 20),
-                    label: const Text('Add a subtopic'),
-                  ),
-                ),
+        if (overdue.isEmpty && due.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(
+              icon: Icons.auto_awesome_rounded,
+              title: 'Nothing to revise yet',
+              subtitle: 'Add your first subtopic and RecallDay will remind you '
+                  'to review it at the right moments.',
+              action: FilledButton.icon(
+                onPressed: () => context.push('/create/subtopic'),
+                icon: const Icon(Icons.add_rounded, size: 20),
+                label: const Text('Add a subtopic'),
               ),
+            ),
+          ),
 
         const SliverPadding(
           padding: EdgeInsets.only(bottom: AppSpacing.bottomInset),
@@ -286,5 +282,4 @@ class _SubtopicSliver extends ConsumerWidget {
       },
     );
   }
-
 }

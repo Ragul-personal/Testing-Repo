@@ -123,7 +123,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/subject/:id',
         parentNavigatorKey: _rootKey,
-        builder: (_, s) => SubjectDetailPage(subjectId: s.pathParameters['id']!),
+        builder: (_, s) =>
+            SubjectDetailPage(subjectId: s.pathParameters['id']!),
       ),
       GoRoute(
         path: '/topic/:id',

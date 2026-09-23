@@ -180,7 +180,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
         if (needsAction)
           ListTile(
-            leading: Icon(Icons.notifications_active_outlined, color: cs.primary),
+            leading:
+                Icon(Icons.notifications_active_outlined, color: cs.primary),
             title: Text(
               p.canNotify ? 'Allow exact alarms' : 'Allow notifications',
             ),
@@ -304,7 +305,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             Icons.folder_special_outlined,
             color: _folderOk ? null : Theme.of(context).colorScheme.primary,
           ),
-          title: Text(_folderOk ? 'Change backup folder' : 'Choose backup folder'),
+          title:
+              Text(_folderOk ? 'Change backup folder' : 'Choose backup folder'),
           subtitle: Text(
             _folderOk
                 ? 'Currently ${_folderName ?? 'selected'}'
@@ -360,13 +362,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       await _details(
         'Folder not writable',
         'RecallDay could not write to that folder. Pick a different one — a '
-        'folder on internal storage such as Documents or Download works best. '
-        'Folders provided by some cloud apps are read-only.',
+            'folder on internal storage such as Documents or Download works best. '
+            'Folders provided by some cloud apps are read-only.',
       );
     }
   }
-
-
 
   Future<void> _import() async {
     final source = await chooseImportSource(context);
@@ -417,7 +417,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             final ok = await confirmDelete(
               context,
               title: 'Reset all data?',
-              message: 'This deletes every subject, topic, subtopic, review and '
+              message:
+                  'This deletes every subject, topic, subtopic, review and '
                   'attachment — both on this device and in your folder. '
                   'Export a backup first if you want to keep any of it; an '
                   'exported file is not affected.',

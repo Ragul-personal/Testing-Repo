@@ -108,7 +108,9 @@ Future<void> reviseSubtopic(
     ..showSnackBar(
       SnackBar(
         content: Text(
-          days <= 1 ? 'Revised · back tomorrow' : 'Revised · next in $days days',
+          days <= 1
+              ? 'Revised · back tomorrow'
+              : 'Revised · next in $days days',
         ),
       ),
     );

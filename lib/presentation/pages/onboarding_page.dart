@@ -90,8 +90,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       await _details(
         'That folder can’t be used',
         'RecallDay could not write to it. Please choose another — a folder on '
-        'your phone’s internal storage, such as Documents or Download, works '
-        'best. Some cloud apps only offer read-only folders.',
+            'your phone’s internal storage, such as Documents or Download, works '
+            'best. Some cloud apps only offer read-only folders.',
       );
     }
   }
@@ -110,7 +110,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
         await _details(
           'Nothing was restored',
           'That backup was read but held nothing to restore. Pick the '
-          'file you exported, or the folder you unpacked it into.',
+              'file you exported, or the folder you unpacked it into.',
         );
       } else {
         setState(() => _restoredSummary = summary.toString());
@@ -310,8 +310,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           style: FilledButton.styleFrom(
             minimumSize: const Size(double.infinity, 54),
           ),
-          onPressed:
-              done && !_busy ? () => _go(_Step.existingFolder) : null,
+          onPressed: done && !_busy ? () => _go(_Step.existingFolder) : null,
           child: const Text('Next'),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -389,7 +388,8 @@ class _StepScaffold extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.sm, AppSpacing.sm, 0, 0),
+          padding:
+              const EdgeInsets.fromLTRB(AppSpacing.sm, AppSpacing.sm, 0, 0),
           child: IconButton(
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: onBack,
@@ -453,7 +453,9 @@ class _FolderTile extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            ready ? Icons.check_circle_rounded : Icons.drive_folder_upload_outlined,
+            ready
+                ? Icons.check_circle_rounded
+                : Icons.drive_folder_upload_outlined,
             color: ready ? success : cs.primary,
           ),
           const SizedBox(width: AppSpacing.md),

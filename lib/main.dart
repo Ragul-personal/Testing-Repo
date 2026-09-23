@@ -65,9 +65,11 @@ Future<void> main() async {
     }
   }
 
-  runApp(fatal == null
-      ? const ProviderScope(child: _AppRoot())
-      : _StartupErrorApp(message: fatal));
+  runApp(
+    fatal == null
+        ? const ProviderScope(child: _AppRoot())
+        : _StartupErrorApp(message: fatal),
+  );
 }
 
 /// Shown instead of a black screen when startup genuinely cannot continue, so

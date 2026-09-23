@@ -50,8 +50,8 @@ class SafService {
   /// Ask the user to choose the app's storage folder. Remembered for good.
   Future<String?> pickFolder() async {
     try {
-      final uri = await _channel
-          .invokeMethod<String>('pickFolder', {'persist': true});
+      final uri =
+          await _channel.invokeMethod<String>('pickFolder', {'persist': true});
       if (uri != null) await _remember(uri);
       return uri;
     } on PlatformException catch (e) {
@@ -273,5 +273,4 @@ class SafService {
     if (ok) await deleteFile(probe);
     return ok;
   }
-
 }

@@ -24,8 +24,7 @@ class SubtopicDetailPage extends ConsumerStatefulWidget {
   const SubtopicDetailPage({super.key, required this.subtopicId});
 
   @override
-  ConsumerState<SubtopicDetailPage> createState() =>
-      _SubtopicDetailPageState();
+  ConsumerState<SubtopicDetailPage> createState() => _SubtopicDetailPageState();
 }
 
 class _SubtopicDetailPageState extends ConsumerState<SubtopicDetailPage> {
@@ -68,7 +67,8 @@ class _SubtopicDetailPageState extends ConsumerState<SubtopicDetailPage> {
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
 
-    final subtopics = ref.watch(subtopicsStreamProvider).valueOrNull ?? const [];
+    final subtopics =
+        ref.watch(subtopicsStreamProvider).valueOrNull ?? const [];
     final subtopic =
         subtopics.where((s) => s.id == widget.subtopicId).firstOrNull;
 
@@ -90,8 +90,10 @@ class _SubtopicDetailPageState extends ConsumerState<SubtopicDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(topic?.title ?? subject?.name ?? 'Subtopic',
-            style: tt.titleMedium),
+        title: Text(
+          topic?.title ?? subject?.name ?? 'Subtopic',
+          style: tt.titleMedium,
+        ),
         actions: [
           // Three icon buttons crowded the bar and gave delete the same weight
           // as edit. Secondary actions now live in an overflow menu.
@@ -108,9 +110,7 @@ class _SubtopicDetailPageState extends ConsumerState<SubtopicDetailPage> {
                   HapticFeedback.selectionClick();
                   await ref.read(topicCommandsProvider).setStatus(
                         subtopic.id,
-                        paused
-                            ? SubtopicStatus.active
-                            : SubtopicStatus.paused,
+                        paused ? SubtopicStatus.active : SubtopicStatus.paused,
                       );
                 case 'delete':
                   final ok = await confirmDelete(
@@ -140,9 +140,7 @@ class _SubtopicDetailPageState extends ConsumerState<SubtopicDetailPage> {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: Icon(
-                    paused
-                        ? Icons.play_arrow_rounded
-                        : Icons.pause_rounded,
+                    paused ? Icons.play_arrow_rounded : Icons.pause_rounded,
                   ),
                   title: Text(paused ? 'Resume reminders' : 'Pause reminders'),
                 ),
@@ -297,7 +295,8 @@ class _Breadcrumb extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final tt = theme.textTheme;
-    if (subjectName == null && topicName == null) return const SizedBox.shrink();
+    if (subjectName == null && topicName == null)
+      return const SizedBox.shrink();
 
     Widget crumb(String text, Color color, VoidCallback? onTap) => InkWell(
           onTap: onTap,
@@ -533,9 +532,7 @@ class _MasteredPanel extends ConsumerWidget {
           label: const Text('Start repetition again'),
           onPressed: () async {
             HapticFeedback.lightImpact();
-            await ref
-                .read(topicCommandsProvider)
-                .resumeRepetition(subtopic.id);
+            await ref.read(topicCommandsProvider).resumeRepetition(subtopic.id);
             if (!context.mounted) return;
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()

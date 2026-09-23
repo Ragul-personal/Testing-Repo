@@ -55,7 +55,9 @@ Future<int> runHierarchyMigration({
     }
 
     if (created > 0) {
-      debugPrint('[migration] created $created topic(s) for existing subtopics');
+      debugPrint(
+        '[migration] created $created topic(s) for existing subtopics',
+      );
     }
     return created;
   } catch (e, st) {

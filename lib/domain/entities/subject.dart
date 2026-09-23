@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class Subject extends Equatable {
   final String id;
   final String name;
-  final int colorValue;       // ARGB int — Color.value
-  final String iconKey;       // resolves to an Icon via IconCatalog
+  final int colorValue; // ARGB int — Color.value
+  final String iconKey; // resolves to an Icon via IconCatalog
   final DateTime createdAt;
   final bool archived;
 
@@ -39,5 +39,6 @@ class Subject extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, colorValue, iconKey, createdAt, archived];
+  List<Object?> get props =>
+      [id, name, colorValue, iconKey, createdAt, archived];
 }
