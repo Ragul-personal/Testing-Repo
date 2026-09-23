@@ -59,8 +59,8 @@ class DailyTasksManagePage extends ConsumerWidget {
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: false,
               itemCount: active.length,
-              onReorder: (oldIdx, newIdx) {
-                if (newIdx > oldIdx) newIdx--;
+              onReorderItem: (oldIdx, newIdx) {
+                // onReorderItem already adjusts newIdx for us, so no need for `if (newIdx > oldIdx) newIdx--;`
                 final reordered = List<DailyTaskTemplate>.from(active);
                 final item = reordered.removeAt(oldIdx);
                 reordered.insert(newIdx, item);

@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -83,9 +81,6 @@ class BackupService {
   /// it. Attachments are immutable once added, so each one is copied across
   /// exactly once, streamed, and never touched again.
   static const String _folderFiles = 'RecallDay-files';
-
-  /// Name used only by the explicit share/export action.
-  static const String _archiveFileName = 'recallday-backup.zip';
 
   /// Written by versions that mirrored a zip automatically. Read on restore so
   /// an older folder isn't orphaned; never written again.

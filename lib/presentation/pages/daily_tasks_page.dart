@@ -7,6 +7,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/date_utils.dart';
 import '../../domain/entities/daily_task.dart';
 import '../providers/daily_task_providers.dart';
+import '../providers/providers.dart';
 import '../widgets/daily_task_chart.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/tab_app_bar.dart';

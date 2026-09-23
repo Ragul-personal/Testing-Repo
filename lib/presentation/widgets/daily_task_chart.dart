@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,8 +22,8 @@ class DailyTaskChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
+    final cs = Theme.of(context).colorScheme;
+    final direction = Directionality.of(context);
     final visible =
         data.length > maxDays ? data.sublist(data.length - maxDays) : data;
 
@@ -40,6 +41,7 @@ class DailyTaskChart extends StatelessWidget {
           barBackground: cs.surfaceContainerHighest,
           labelColor: cs.onSurfaceVariant,
           valueColor: cs.onSurface,
+          textDirection: direction,
         ),
       ),
     );
@@ -52,6 +54,7 @@ class _ChartPainter extends CustomPainter {
   final Color barBackground;
   final Color labelColor;
   final Color valueColor;
+  final ui.TextDirection textDirection;
 
   _ChartPainter({
     required this.records,
@@ -59,6 +62,7 @@ class _ChartPainter extends CustomPainter {
     required this.barBackground,
     required this.labelColor,
     required this.valueColor,
+    required this.textDirection,
   });
 
   @override
@@ -125,7 +129,7 @@ class _ChartPainter extends CustomPainter {
             fontWeight: FontWeight.w600,
           ),
         ),
-        textDirection: TextDirection.ltr,
+        textDirection: textDirection,
       )..layout();
       valueTp.paint(
         canvas,
@@ -139,7 +143,7 @@ class _ChartPainter extends CustomPainter {
           text: label,
           style: TextStyle(color: labelColor, fontSize: 11),
         ),
-        textDirection: TextDirection.ltr,
+        textDirection: textDirection,
       )..layout();
       labelTp.paint(
         canvas,
