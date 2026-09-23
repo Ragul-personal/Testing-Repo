@@ -6,6 +6,7 @@ import '../../domain/repositories/daily_task_repository.dart';
 import 'providers.dart';
 
 /// Re-exported so screens need a single import for both read and write.
+export 'daily_task_analytics_providers.dart';
 export 'daily_task_commands.dart';
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -84,9 +85,6 @@ final dailyTaskProgressProvider = Provider<DailyTaskProgress>((ref) {
   final tasks = ref.watch(activeDailyTasksProvider);
   final completions = ref.watch(todayCompletionsProvider);
   final total = tasks.length;
-  final completed =
-      tasks.where((t) => completions[t.id]?.completed == true).length;
+  final completed = tasks.where((t) => completions[t.id]?.completed == true).length;
   return DailyTaskProgress(total: total, completed: completed);
 });
-
-export 'daily_task_analytics_providers.dart';

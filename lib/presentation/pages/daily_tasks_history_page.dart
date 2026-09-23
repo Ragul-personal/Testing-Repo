@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/date_utils.dart';
-import '../providers/daily_task_analytics_providers.dart';
+import 'package:intl/intl.dart';
 import '../providers/daily_task_providers.dart';
-import '../providers/providers.dart';
 import '../widgets/empty_state.dart';
 
 /// Historical progress screen with Day / Week / Month modes.
@@ -81,7 +80,7 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+
     final tt = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -145,12 +144,14 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
   String _formatDateTitle() {
     if (_mode == 'day') {
       return DateLabels.fullDate(_selectedDate);
-    } else if (_mode == 'week') {
-      final dates = _getWeekDates(_selectedDate);
-      return '${dates.first.day} ${DateLabels.monthAbbr(dates.first)} – ${dates.last.day} ${DateLabels.monthAbbr(dates.last)}';
-    } else {
-      return '${DateLabels.monthFull(_selectedDate)} ${_selectedDate.year}';
     }
+    if (_mode == 'week') {
+      final dates = _getWeekDates(_selectedDate);
+      final formatter = DateFormat('MMM');
+      return '${dates.first.day} ${formatter.format(dates.first)} – '
+          '${dates.last.day} ${formatter.format(dates.last)}';
+    }
+    return DateFormat('MMMM yyyy').format(_selectedDate);
   }
 
   Widget _buildContent() {

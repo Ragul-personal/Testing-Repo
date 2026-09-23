@@ -74,11 +74,13 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       if (s.status != SubtopicStatus.active) continue;
       final projected = engine.projectFutureDueDates(s);
       for (var i = 0; i < projected.length; i++) {
-        add(_CalEntry(
-          s,
-          projected[i],
-          i == 0 ? _Kind.scheduled : _Kind.projected,
-        ));
+        add(
+          _CalEntry(
+            s,
+            projected[i],
+            i == 0 ? _Kind.scheduled : _Kind.projected,
+          ),
+        );
       }
     }
 
