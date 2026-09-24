@@ -344,7 +344,11 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
   }
 
   void _showTaskDrillDown(
-      BuildContext context, String taskId, String title, List<DateTime> dates) {
+    BuildContext context,
+    String taskId,
+    String title,
+    List<DateTime> dates,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
