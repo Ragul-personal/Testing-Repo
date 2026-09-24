@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/date_utils.dart';
 import '../providers/daily_task_providers.dart';
-import '../providers/daily_task_analytics_providers.dart';
 import '../widgets/empty_state.dart';
 
 /// Historical progress screen with Day / Week / Month modes.
@@ -398,8 +397,14 @@ class _TaskDrillDownSheet extends ConsumerWidget {
                 itemCount: dates.length,
                 itemBuilder: (context, index) {
                   final date = dates[index];
+                  // isTaskScheduledOnDate is a plain function, not a provider
+                  final allTemplates =
+                      ref.watch(dailyTaskTemplatesProvider).valueOrNull ??
+                          const [];
+                  final template =
+                      allTemplates.where((t) => t.id == taskId).firstOrNull;
                   final isScheduled =
-                      ref.watch(isTaskScheduledOnDateProvider(taskId, date));
+                      template != null && isTaskScheduledOnDate(template, date);
 
                   if (!isScheduled) return const SizedBox.shrink();
 

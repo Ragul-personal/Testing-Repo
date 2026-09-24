@@ -144,7 +144,8 @@ class DailyTasksPage extends ConsumerWidget {
                       children: [
                         InkWell(
                           onTap: () => context.push(
-                              '/daily-tasks/history/day/${today.toIso8601String()}'),
+                            '/daily-tasks/history/day/${today.toIso8601String()}',
+                          ),
                           borderRadius: BorderRadius.circular(AppRadius.sm),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -152,8 +153,10 @@ class DailyTasksPage extends ConsumerWidget {
                               children: [
                                 Text('Recent Progress', style: tt.titleSmall),
                                 const SizedBox(width: AppSpacing.xs),
-                                const Icon(Icons.chevron_right_rounded,
-                                    size: 18),
+                                const Icon(
+                                  Icons.chevron_right_rounded,
+                                  size: 18,
+                                ),
                               ],
                             ),
                           ),
@@ -333,8 +336,8 @@ class _TaskTile extends ConsumerWidget {
                 label: 'Undo',
                 onPressed: () {
                   commands.createTemplate(
-                      title: task
-                          .title); // Basic undo (might lose history but good enough for now)
+                    title: task.title,
+                  ); // Basic undo
                 },
               ),
             ),
