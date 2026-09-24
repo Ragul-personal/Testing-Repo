@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/date_utils.dart';
-import 'package:intl/intl.dart';
 import '../providers/daily_task_providers.dart';
+import '../providers/daily_task_analytics_providers.dart';
 import '../widgets/empty_state.dart';
 
 /// Historical progress screen with Day / Week / Month modes.
@@ -66,7 +66,6 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
   }
 
   List<DateTime> _getWeekDates(DateTime date) {
-    // Assuming Monday is start of week
     final weekday = date.weekday;
     final monday = date.subtract(Duration(days: weekday - 1));
     return List.generate(7, (i) => monday.add(Duration(days: i)));
@@ -161,9 +160,9 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
       return _buildDayView();
     }
     if (_mode == 'week') {
-      return _buildAggregateView(_getWeekDates(_selectedDate));
+      return _buildWeekView();
     }
-    return _buildAggregateView(_getMonthDates(_selectedDate));
+    return _buildMonthView();
   }
 
   Widget _buildDayView() {
@@ -237,20 +236,13 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
                     decoration: done ? TextDecoration.lineThrough : null,
                   ),
                 ),
-                subtitle: streak > 1 ? Text('🔥 $streak day streak') : null,
+                subtitle: streak > 0 ? Text('🔥 $streak day streak') : null,
                 onTap: () {
                   commands.toggleCompletion(
                     taskTemplateId: task.id,
                     date: _selectedDate,
                   );
                 },
-                trailing: IconButton(
-                  icon: const Icon(Icons.bar_chart_rounded),
-                  onPressed: () {
-                    // Navigate to task specific history
-                    context.push('/daily-tasks/history/task/${task.id}');
-                  },
-                ),
               );
             },
             childCount: tasks.length,
@@ -260,7 +252,17 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
     );
   }
 
-  Widget _buildAggregateView(List<DateTime> dates) {
+  Widget _buildWeekView() {
+    final dates = _getWeekDates(_selectedDate);
+    return _buildAggregateList(dates, 'Week');
+  }
+
+  Widget _buildMonthView() {
+    final dates = _getMonthDates(_selectedDate);
+    return _buildAggregateList(dates, 'Month');
+  }
+
+  Widget _buildAggregateList(List<DateTime> dates, String label) {
     final agg = ref.watch(aggregateProgressProvider(dates));
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
@@ -311,7 +313,6 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final rec = agg.taskRecords[index];
-              // To get task title we need all templates.
               final allTemplates =
                   ref.watch(dailyTaskTemplatesProvider).valueOrNull ?? [];
               final t =
@@ -320,15 +321,19 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
 
               return ListTile(
                 title: Text(t.title),
-                subtitle: Text(
-                  '${rec.completed} / ${rec.totalScheduled} scheduled days',
-                ),
-                trailing: Text(
-                  '${rec.percentage.round()}%',
-                  style: tt.titleMedium?.copyWith(color: cs.primary),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${rec.percentage.round()}%',
+                      style: tt.titleMedium?.copyWith(color: cs.primary),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    const Icon(Icons.chevron_right_rounded),
+                  ],
                 ),
                 onTap: () {
-                  context.push('/daily-tasks/history/task/${t.id}');
+                  _showTaskDrillDown(context, t.id, t.title, dates);
                 },
               );
             },
@@ -336,6 +341,91 @@ class _DailyTasksHistoryPageState extends ConsumerState<DailyTasksHistoryPage> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showTaskDrillDown(
+      BuildContext context, String taskId, String title, List<DateTime> dates) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => _TaskDrillDownSheet(
+        taskId: taskId,
+        title: title,
+        dates: dates,
+      ),
+    );
+  }
+}
+
+class _TaskDrillDownSheet extends ConsumerWidget {
+  final String taskId;
+  final String title;
+  final List<DateTime> dates;
+
+  const _TaskDrillDownSheet({
+    required this.taskId,
+    required this.title,
+    required this.dates,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commands = ref.read(dailyTaskCommandsProvider);
+    final cs = Theme.of(context).colorScheme;
+    final formatter = DateFormat('E, MMM d');
+
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) {
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.gutter),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: dates.length,
+                itemBuilder: (context, index) {
+                  final date = dates[index];
+                  final isScheduled =
+                      ref.watch(isTaskScheduledOnDateProvider(taskId, date));
+
+                  if (!isScheduled) return const SizedBox.shrink();
+
+                  final completions =
+                      ref.watch(historicalCompletionsProvider(date));
+                  final done = completions[taskId]?.completed == true;
+
+                  return ListTile(
+                    leading: Icon(
+                      done ? Icons.check_circle_rounded : Icons.circle_outlined,
+                      color: done ? cs.primary : cs.outline,
+                    ),
+                    title: Text(formatter.format(date)),
+                    onTap: () {
+                      commands.toggleCompletion(
+                        taskTemplateId: taskId,
+                        date: date,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

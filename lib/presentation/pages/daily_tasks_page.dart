@@ -31,6 +31,10 @@ class DailyTasksPage extends ConsumerWidget {
     final tt = Theme.of(context).textTheme;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddDialog(context, commands),
+        child: const Icon(Icons.add_rounded),
+      ),
       body: tasks.isEmpty
           ? CustomScrollView(
               slivers: [
@@ -58,13 +62,6 @@ class DailyTasksPage extends ConsumerWidget {
                 TabAppBar(
                   title: 'Daily Tasks',
                   subtitle: DateLabels.fullDate(today),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.tune_rounded),
-                      tooltip: 'Manage tasks',
-                      onPressed: () => context.push('/daily-tasks/manage'),
-                    ),
-                  ],
                 ),
 
                 // ── Progress card ───────────────────────────────────
@@ -145,19 +142,26 @@ class DailyTasksPage extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Recent Progress',
-                          style: tt.titleSmall,
+                        InkWell(
+                          onTap: () => context.push(
+                              '/daily-tasks/history/day/${today.toIso8601String()}'),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              children: [
+                                Text('Recent Progress', style: tt.titleSmall),
+                                const SizedBox(width: AppSpacing.xs),
+                                const Icon(Icons.chevron_right_rounded,
+                                    size: 18),
+                              ],
+                            ),
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.lg),
                         DailyTaskChart(
                           data: ref.watch(dailyTaskHistoryDaysProvider(7)),
                           maxDays: 7,
-                          onDayTap: (date) {
-                            context.push(
-                              '/daily-tasks/history/day/${date.toIso8601String()}',
-                            );
-                          },
                         ),
                       ],
                     ),
@@ -266,7 +270,7 @@ class DailyTasksPage extends ConsumerWidget {
 // Private widgets
 // ═══════════════════════════════════════════════════════════════════════════════
 
-class _TaskTile extends StatelessWidget {
+class _TaskTile extends ConsumerWidget {
   final DailyTaskTemplate task;
   final bool done;
   final VoidCallback onToggle;
@@ -278,45 +282,170 @@ class _TaskTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final streak = ref.watch(taskStreakProvider(task.id));
+    final commands = ref.read(dailyTaskCommandsProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.gutter,
         vertical: AppSpacing.xs,
       ),
-      child: Material(
-        color: cs.surfaceContainer,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        child: InkWell(
-          onTap: onToggle,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.md,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  done ? Icons.check_circle_rounded : Icons.circle_outlined,
-                  color: done ? cs.primary : cs.outline,
-                  size: 24,
+      child: Dismissible(
+        key: ValueKey(task.id),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: cs.error,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+          child: Icon(Icons.delete_rounded, color: cs.onError),
+        ),
+        confirmDismiss: (_) async {
+          return await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Delete task?'),
+              content: const Text('Are you sure you want to delete this task?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
                 ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: Text(
-                    task.title,
-                    style: tt.bodyLarge?.copyWith(
-                      decoration: done ? TextDecoration.lineThrough : null,
-                      color: done ? cs.onSurfaceVariant : cs.onSurface,
-                    ),
-                  ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('Delete'),
                 ),
               ],
             ),
+          );
+        },
+        onDismissed: (_) {
+          commands.deleteTemplate(task.id);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Task deleted'),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () {
+                  commands.createTemplate(
+                      title: task
+                          .title); // Basic undo (might lose history but good enough for now)
+                },
+              ),
+            ),
+          );
+        },
+        child: Material(
+          color: cs.surfaceContainer,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: InkWell(
+            onTap: onToggle,
+            onLongPress: () {
+              _showEditDialog(context, commands, task);
+            },
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    done ? Icons.check_circle_rounded : Icons.circle_outlined,
+                    color: done ? cs.primary : cs.outline,
+                    size: 24,
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          task.title,
+                          style: tt.bodyLarge?.copyWith(
+                            decoration:
+                                done ? TextDecoration.lineThrough : null,
+                            color: done ? cs.onSurfaceVariant : cs.onSurface,
+                          ),
+                        ),
+                        if (streak > 0) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '🔥 $streak day streak',
+                            style: tt.bodySmall?.copyWith(
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showEditDialog(
+    BuildContext context,
+    DailyTaskCommands commands,
+    DailyTaskTemplate task,
+  ) {
+    final controller = TextEditingController(text: task.title);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.gutter,
+          AppSpacing.gutter,
+          AppSpacing.gutter,
+          MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.gutter,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Edit task',
+              style: Theme.of(ctx).textTheme.titleMedium,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                labelText: 'Task name',
+              ),
+              onSubmitted: (v) {
+                if (v.trim().isNotEmpty) {
+                  commands.updateTemplate(task.copyWith(title: v.trim()));
+                  Navigator.pop(ctx);
+                }
+              },
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton(
+              onPressed: () {
+                final v = controller.text.trim();
+                if (v.isNotEmpty) {
+                  commands.updateTemplate(task.copyWith(title: v));
+                  Navigator.pop(ctx);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
         ),
       ),
     );

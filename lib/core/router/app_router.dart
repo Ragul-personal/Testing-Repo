@@ -8,7 +8,6 @@ import '../../presentation/pages/create_subject_page.dart';
 import '../../presentation/pages/create_subtopic_page.dart';
 import '../../presentation/pages/create_topic_page.dart';
 import '../../presentation/pages/daily_tasks_history_page.dart';
-import '../../presentation/pages/daily_tasks_manage_page.dart';
 import '../../presentation/pages/daily_tasks_page.dart';
 import '../../presentation/pages/daily_tasks_task_history_page.dart';
 import '../../presentation/pages/home_shell.dart';
@@ -105,11 +104,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, s) => DailyTasksTaskHistoryPage(
           taskId: s.pathParameters['taskId']!,
         ),
-      ),
-      GoRoute(
-        path: '/daily-tasks/manage',
-        parentNavigatorKey: _rootKey,
-        builder: (_, __) => const DailyTasksManagePage(),
       ),
       GoRoute(
         path: '/settings',
